@@ -1,1 +1,1 @@
-# PowerMeTelegram
+# PSBoTelegram
