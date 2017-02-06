@@ -119,7 +119,6 @@ function screenshot([Drawing.Rectangle]$bounds, $path) {
 
  screenshot $bounds $ruta
 
-bot-send -photo $ruta -botkey $botkey -chat_id $chat_id | Wait-Job
-Remove-Item $ruta
+bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 
 }
