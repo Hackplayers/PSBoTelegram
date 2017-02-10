@@ -37,3 +37,6 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 para ejecuta
 [9]&nbsp;&nbsp;&nbsp;**/Download**&nbsp;&nbsp; (Download mas ruta nos descarga el archivo)  
 [10]&nbsp;&nbsp;**/Screenshot**&nbsp;&nbsp; (Realiza screenshot y nos lo envia)  
 [11]&nbsp;&nbsp;**/Audio**&nbsp;&nbsp; (/Audio X, Grabaría X segundos de audio y nos lo envia)  
+[12]&nbsp;&nbsp;**/Keylogger**&nbsp;&nbsp; (/Keylogger -- proximamente)  
+[13]&nbsp;&nbsp;**/BypassUAC**&nbsp;&nbsp; (/BypassUAC -- proximamente)  
+
