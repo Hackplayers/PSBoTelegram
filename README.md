@@ -43,4 +43,5 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 para ejecuta
 [11]&nbsp;&nbsp;**/Audio**&nbsp;&nbsp; (/Audio X, Grabaría X segundos de audio y nos lo envia)  
 [12]&nbsp;&nbsp;**/Keylogger**&nbsp;&nbsp; (/Keylogger -- proximamente)  
 [13]&nbsp;&nbsp;**/BypassUAC**&nbsp;&nbsp; (/BypassUAC -- proximamente)  
+[14]&nbsp;&nbsp;**/Persistence**&nbsp;&nbsp; (/Persistence -- proximamente)  
 
