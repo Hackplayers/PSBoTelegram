@@ -8,7 +8,7 @@ Backdoor using Telegram and Powershell
     /_/    /____/_____/\____/_/  \___/_/\___/\__, /_/   \__,_/_/ /_/ /_/
                                         /____/
 
-                                                     v0.2 by CyberVaca @ Luis Vacas
+                                                     v0.3 by CyberVaca @ Luis Vacas
 
 PSBotTelegram es un script escrito en Powershell que nos crea una backdoor que se conecta a Telegram y se gestiona desde Telegram. Al ejecutar el script nos va a pedir tres datos necesarios para crear el shellcode.  
 
@@ -36,3 +36,4 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 para ejecuta
 )  
 [9]&nbsp;&nbsp;&nbsp;**/Download**&nbsp;&nbsp; (Download mas ruta nos descarga el archivo)  
 [10]&nbsp;&nbsp;**/Screenshot**&nbsp;&nbsp; (Realiza screenshot y nos lo envia)  
+[11]&nbsp;&nbsp;**/Audio**&nbsp;&nbsp; (Audio 5, Grabaria 5 segundos de audio y nos lo envia)  
