@@ -176,9 +176,7 @@ do
      switch ($input) 
      { 
            '1' { IEX $your_code ; write-host $code
-		cls 
-		
-           } '2' { IEX $your_code ; $plantilla_bat;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_bat -tipo "bat"
+		   } '2' { IEX $your_code ; $plantilla_bat;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_bat -tipo "bat"
            } '3' { IEX $your_code ; $plantilla_hta;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_hta -tipo "hta" 
            } '4' { IEX $your_code ; $plantilla_sct;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_sct -tipo "sct"
            } '5' { IEX $your_code ; $plantilla_vbs;Write-Host "`n`n" ; Exportar-File -plantilla $plantilla_vbs -tipo "vbs"
