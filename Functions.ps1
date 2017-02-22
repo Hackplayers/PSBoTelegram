@@ -157,9 +157,9 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 {$privilegios = "No tienes privilegios administrativos" }  else {$privilegios = "Tienes todos los privilegios"}
 $usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
 $result = New-Object psobject -Property @{
-"Usuario" = $usuario
-"Dominio" = $dominio
-"Privilegios" = $privilegios
+"Usuario" = "$usuario"
+"Dominio" = "$dominio"
+"Privilegios" = "$privilegios"
  }
  $result | Select-Object usuario, dominio, privilegios 
 }
