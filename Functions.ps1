@@ -156,10 +156,10 @@ Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\ope
 
 function whoami_me {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{[string]$privilegios = "Sin privilegios" }  else {[string]$privilegios = "Privilegios Altos"}
+{[string]$privilegios = "Sin privilegios" }  else {[string]$privilegios = "Privilegios Altos"}; $usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
 $result = New-Object psobject -Property @{
-"Usuario" = "$env:USERNAME"
-"Dominio" = "$env:USERDOMAIN"
+"Usuario" = "$usuario"
+"Dominio" = "$dominio"
 "Privilegios" = "$privilegios"
  }
  $result | Select-Object usuario, dominio, privilegios 
