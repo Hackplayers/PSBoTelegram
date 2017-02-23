@@ -10,7 +10,7 @@ $banner = "    ____  _____ ____      ______     __
                                         /____/                       "
 
 
-$show_banner = 'Write-Host $banner -ForegroundColor Green ; Write-Host "`n                                                     v$version by CyberVaca @ Luis Vacas" -ForegroundColor red'
+$show_banner = 'Write-Host $banner -ForegroundColor Green ; Write-Host "`n                                                     v$version by CyberVaca @ HackPlayers" -ForegroundColor red'
 
 IEX $show_banner
 
