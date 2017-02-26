@@ -39,13 +39,13 @@ Los datos que nos pide son los siguientes:
 
 # Salidas de archivo:
 
-**[+] Bat**
-**[+] HTA**
-**[+] SCT**
-**[+] VBS**
-**[+] MACRO** (Proximamente)
+**[+] Bat**  
+**[+] HTA**  
+**[+] SCT**  
+**[+] VBS**  
+**[+] MACRO** (Proximamente)  
 
-Una vez introducido estos datos, nos creará un shellcode en BASE64 para ejecutarlo en el equipo objetivo.  
+Una vez introducido estos datos, nos creará un shellcode en BASE64 o un tipo de archivo seleccionado para ejecutarlo en el equipo objetivo.  
 
 # Funciones del backdoor.
 
