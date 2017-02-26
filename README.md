@@ -3,7 +3,7 @@ Backdoor using Telegram and Powershell
 
 Podeis probar el script abriendo una consola de powershell y pegando esto:
 
-**IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
+    **IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
 
         ____  _____ ____      ______     __
        / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
@@ -12,17 +12,21 @@ Podeis probar el script abriendo una consola de powershell y pegando esto:
     /_/    /____/_____/\____/_/  \___/_/\___/\__, /_/   \__,_/_/ /_/ /_/
                                         /____/
 
-                                                     v0.5 by CyberVaca @ HackPlayers
+                                                     v0.6 by CyberVaca @ HackPlayers
 
 PSBotTelegram es un script escrito en Powershell que nos crea una backdoor que se conecta a Telegram y se gestiona desde Telegram. Al ejecutar el script nos va a pedir tres datos necesarios para crear el shellcode. 
 
 # Instalación en Linux
 
+    git clone https://github.com/hackplayers/psbotelegram.git
     apt-get update > /dev/null
     apt-get install libunwind8 libicu55 
     wget https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.13/powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
     sudo dpkg -i powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
 
+# Instalación en Windows
+
+    **IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
 Los datos que nos pide son los siguientes:  
 
 # Parametros
