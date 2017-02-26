@@ -39,7 +39,7 @@ Los datos que nos pide son los siguientes:
 
 # Salidas de archivo:
 
-**[+] Bat**  
+**[+] BAT**  
 **[+] HTA**  
 **[+] SCT**  
 **[+] VBS**  
