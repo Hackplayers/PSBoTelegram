@@ -43,12 +43,6 @@ Los datos que nos pide son los siguientes:
 # Salidas de archivo:
 ![Salidas](./images/OutFiles.png)  
 
-**[+] BAT**  
-**[+] HTA**  
-**[+] SCT**  
-**[+] VBS**  
-**[+] MACRO** (Proximamente)  
-
 Una vez introducido estos datos, nos creará un shellcode en BASE64 en un tipo de archivo seleccionado para ejecutarlo en el equipo a auditar.  
 
 # Funciones del backdoor.
