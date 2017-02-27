@@ -1,5 +1,4 @@
 clear
-$Linux = uname
 $ErrorActionPreference = "SilentlyContinue"
 $version = "0.6"
 
