@@ -1,7 +1,7 @@
 clear
 $Linux = uname
 $ErrorActionPreference = "SilentlyContinue"
-$version = "0.5"
+$version = "0.6"
 
 $banner = "    ____  _____ ____      ______     __                              
    / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
