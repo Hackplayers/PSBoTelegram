@@ -41,6 +41,7 @@ Los datos que nos pide son los siguientes:
 **[+] Introduzca el delay para la conexión:** "En este campo seteamos el delay(retardo) entre en pc con el backdoor y nuestro chat de telegram"   
 
 # Salidas de archivo:
+![Salidas](./images/OutFiles.png)  
 
 **[+] BAT**  
 **[+] HTA**  
