@@ -59,9 +59,8 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 en un tipo d
 [9]&nbsp;&nbsp;&nbsp;**/Download**&nbsp;&nbsp; (Download mas ruta nos descarga el archivo)  
 [10]&nbsp;&nbsp;**/Screenshot**&nbsp;&nbsp; (Realiza screenshot y nos lo envia)  
 [11]&nbsp;&nbsp;**/Audio**&nbsp;&nbsp; (/Audio X, Grabaría X segundos de audio y nos lo envia)  
-[12]&nbsp;&nbsp;**/Keylogger**&nbsp;&nbsp; (/Keylogger -- proximamente)  
-[13]&nbsp;&nbsp;**/BypassUAC**&nbsp;&nbsp; (Ejecuta el Bot con privilegios administrativos)  
-[14]&nbsp;&nbsp;**/Persistence**&nbsp;&nbsp; (/Persistence -- proximamente)  
-[15]&nbsp;&nbsp;**/MimiGatoz**&nbsp;&nbsp; (Ejecuta Mimikatz modificado para el bypass AV y nos envia los datos)
+[12]&nbsp;&nbsp;**/BypassUAC**&nbsp;&nbsp; (Ejecuta el Bot con privilegios administrativos)  
+[13]&nbsp;&nbsp;**/Persistence**&nbsp;&nbsp; (/Persistence ON/OFF)  
+[14]&nbsp;&nbsp;**/MimiGatoz**&nbsp;&nbsp; (Ejecuta Mimikatz modificado para el bypass AV y nos envia los datos)
 
 
