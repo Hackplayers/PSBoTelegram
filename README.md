@@ -11,7 +11,7 @@ Podeis probar el script abriendo una consola de powershell y ejecutando este com
       / /_/ /\__ \/ __  / __ \/ / / _ \/ / _ \/ __  / ___/ __  / __  __ \
      / ____/___/ / /_/ / /_/ / / /  __/ /  __/ /_/ / /  / /_/ / / / / / /
     /_/    /____/_____/\____/_/  \___/_/\___/\__, /_/   \__,_/_/ /_/ /_/
-                                        /____/
+                                            /____/
 
                                                      v0.7 by CyberVaca @ HackPlayers
 
