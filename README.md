@@ -62,5 +62,6 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 en un tipo d
 [12]&nbsp;&nbsp;**/BypassUAC**&nbsp;&nbsp; (Ejecuta el Bot con privilegios administrativos)  
 [13]&nbsp;&nbsp;**/Persistence**&nbsp;&nbsp; (/Persistence ON/OFF)  
 [14]&nbsp;&nbsp;**/MimiGatoz**&nbsp;&nbsp; (Ejecuta Mimikatz modificado para el bypass AV y nos envia los datos)
+[15]&nbsp;&nbsp;**/Mimikittenz**&nbsp;&nbsp; (Ejecuta Mimikittenz, comprobando si el equipo es vulnerable y si no lo es, lo hace vulnerable... )
 
 
