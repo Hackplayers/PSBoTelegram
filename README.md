@@ -1,6 +1,6 @@
 
 # PsBoTelegram
-Backdoor using Telegram and Powershell. Por favor, usad sólo vuestros equipos para las pruebas. No me hago responsable de un mal uso del software. Rercordad que esto sól es una prueba de concepto. 
+Backdoor using Telegram and Powershell. Por favor, usad sólo vuestros equipos para las pruebas. No me hago responsable de un mal uso del software. Rercordad que esto sólo es una prueba de concepto. 
 
 Podeis probar el script abriendo una consola de powershell y ejecutando este comando:
 
