@@ -1,6 +1,6 @@
 clear
 $ErrorActionPreference = "SilentlyContinue"
-$version = "0.7"
+$version = "0.8"
 
 $banner = "    ____  _____ ____      ______     __                              
    / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
