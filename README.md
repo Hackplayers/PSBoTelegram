@@ -88,4 +88,30 @@ You can test the script by opening a powershell console and running this command
 
 PSBotTelegram is a script written in Powershell, which creates a backdoor that connects to a Telegram BOT. The BOT will be controlled by Telegram messages. When executing the script we will ask for three data needed to create the shellcode.
 
+# Install in Linux
+
+    git clone https://github.com/hackplayers/psbotelegram.git
+    cd psbotelegram
+    sudo apt-get update > /dev/null
+    sudo apt-get install libunwind8 libicu55 
+    wget https://github.com/PowerShell/PowerShell/releases/download/v6.0.0-alpha.13/powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
+    sudo dpkg -i powershell_6.0.0-alpha.13-1ubuntu1.16.04.1_amd64.deb
+    powershell ./PSBoTelegram.ps1
+
+# Install in Windows
+
+    Powershell.exe ./PSBotelegram.ps1
+    
+The data that asks us are the following:
+
+# Parametres
+![Parametros](./images/parametros.png)  
+ 
+**[+] Enter the Telegram Bot Token:** "Here we have to put the Token of the bot we have created."  
+**[+] Enter your Chat ID:** "Here we have to put our Telegram ID."  
+**[+] Enter the delay for the connection:** "In this field we set the delay between pc in the backdoor and our telegram chat"   
+
+
+
+
 
