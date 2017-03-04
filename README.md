@@ -111,7 +111,22 @@ The data that asks us are the following:
 **[+] Enter your Chat ID:** "Here we have to put our Telegram ID."  
 **[+] Enter the delay for the connection:** "In this field we set the delay between pc in the backdoor and our telegram chat"   
 
-
+[1]&nbsp;&nbsp;&nbsp;**/Help** (Show us the help)
+[2]&nbsp;&nbsp;&nbsp;**/Info** (Returns information about the equipment)
+[3]&nbsp;&nbsp;&nbsp;**/Shell** (/ Shell + CmdLet to run)
+[4]&nbsp;&nbsp;&nbsp;**/Whoami** (Returns the user who ran the code)
+[5]&nbsp;&nbsp;&nbsp;**/Ippublic** (We give IP publica, Country and Target City)
+[6]&nbsp;&nbsp;&nbsp;**/Kill** (Kill the backdoor)
+[7]&nbsp;&nbsp;&nbsp;**/Scriptimport** (Import the powershell script by passing it a url)
+[8]&nbsp;&nbsp;&nbsp;**/Shell nc (netcat)** (Powercat function https://github.com/besimorhino/powercat)
+[9]&nbsp;&nbsp;&nbsp;**/Download** (Download more path to download the file)
+[10]&nbsp;&nbsp;&nbsp;**/Screenshot** (Make screenshot and send it to us)
+[11]&nbsp;&nbsp;&nbsp;**/Audio** (/Audio X, Record X seconds of audio and send it to us)
+[12]&nbsp;&nbsp;&nbsp;**/BypassUAC** (Runs the bot with administrative privileges)
+[13]&nbsp;&nbsp;&nbsp;**/Persistence** (/ Persistence ON / OFF)
+[14]&nbsp;&nbsp;&nbsp;**/MimiGatoz** (Run modified Mimikatz for AV bypass and send us the data)
+[15]&nbsp;&nbsp;&nbsp;**/Keylogger-Selective** (Executes a Selective Keylogger, example / keylogger-Selective Facebook)
+[16]&nbsp;&nbsp;&nbsp;**/Mimikittenz** (Mimikittenz runs, checking if the computer is vulnerable and if it is not, it makes it vulnerable ...)
 
 
 
