@@ -111,6 +111,8 @@ The data that asks us are the following:
 **[+] Enter your Chat ID:** "Here we have to put our Telegram ID."  
 **[+] Enter the delay for the connection:** "In this field we set the delay between pc in the backdoor and our telegram chat"   
 
+# Backdoor functions
+
 [1]&nbsp;&nbsp;&nbsp;**/Help** (Show us the help)  
 [2]&nbsp;&nbsp;&nbsp;**/Info** (Returns information about the equipment)  
 [3]&nbsp;&nbsp;&nbsp;**/Shell** (/ Shell + CmdLet to run)  
