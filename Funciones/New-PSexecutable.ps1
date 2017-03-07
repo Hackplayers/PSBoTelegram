@@ -1,5 +1,6 @@
-function New-PSExecutable {     
-param(
+
+function New-PSExecutable 
+{ param(
     [string]$Scriptname=$(throw "Mandatory param -scriptname is missing."),
     [string]$Filename,
     [switch]$KeepAlive
